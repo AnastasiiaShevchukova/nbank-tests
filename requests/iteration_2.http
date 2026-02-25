@@ -141,14 +141,14 @@ Authorization: Basic S2F0ZTE5OTg6S2F0ZTE5OTgh
   "amount": -10
 }
 
-### 8 (TRANSFER) Negative test: Authorized User can not transfer 10101 rubles
+### 8 (TRANSFER) Negative test: Authorized User can not transfer 10001 rubles
 POST http://localhost:4111/api/v1/accounts/transfer
 Content-Type: application/json
 Authorization: Basic S2F0ZTE5OTg6S2F0ZTE5OTgh
 {
   "senderAccountId": 3,
   "receiverAccountId": 1,
-  "amount": 10101
+  "amount": 10001
 }
 
 ### 9 (TRANSFER) Negative test: Authorized User can not transfer more than the amount on his balance
