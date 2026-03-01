@@ -35,4 +35,18 @@ public class ResponseSpecs {
                 .build();
     }
 
+    public static ResponseSpecification requestReturnsBadRequestWithoutErrorKey(String errorMsg){
+        return defaultResponseBuilder()
+                .expectStatusCode(HttpStatus.SC_BAD_REQUEST)
+                .expectBody(Matchers.equalTo(errorMsg))
+                .build();
+    }
+
+    public static ResponseSpecification requestReturnsForbidden(String errorMsg){
+        return defaultResponseBuilder()
+                .expectStatusCode(HttpStatus.SC_FORBIDDEN)
+                .expectBody(Matchers.equalTo(errorMsg))
+                .build();
+    }
+
 }
