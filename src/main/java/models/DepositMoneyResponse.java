@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class DepositMoneyResponse extends BaseModel{
-    private int id;
+    private long id;
     private String accountNumber;
     private double balance;
     private List<TransactionResponse> transactions;
