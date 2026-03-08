@@ -1,17 +1,19 @@
 package apiTests.iteration1;
 
 import apiTests.BaseTest;
-import generators.RandomData;
+import generators.RandomModelGenerator;
 import models.CreateUserRequest;
 import models.CreateUserResponse;
 import models.GetAllUserResponse;
-import models.UserRole;
+import models.comparison.ModelAssertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import requests.AdminCreateUserRequester;
-import requests.GetAllUsersRequester;
+import requests.skelethon.Endpoint;
+import requests.skelethon.requesters.CrudRequester;
+import requests.skelethon.requesters.ValidatedCrudRequester;
+import requests.steps.AdminSteps;
 import specs.RequestSpecs;
 import specs.ResponseSpecs;
 
@@ -24,24 +26,14 @@ public class CreateUserTest extends BaseTest {
     // Positive:
     @Test
     public void adminCanCreateUserWithCorrectDataTest() {
-        //создание пользователя
-        CreateUserRequest createUserRequest = CreateUserRequest.builder()
-                .username(RandomData.getUserName())
-                .password(RandomData.getUserPassword())
-                .role(UserRole.USER.toString())
-                .build();
-
-        CreateUserResponse createUserResponse = new AdminCreateUserRequester(RequestSpecs.adminSpec(), ResponseSpecs.entityWasCreated())
-                .post(createUserRequest)
-                .extract().as(CreateUserResponse.class);
-        softly.assertThat(createUserRequest.getUsername()).isEqualTo(createUserResponse.getUsername());
-        softly.assertThat(createUserRequest.getPassword()).isNotEqualTo(createUserResponse.getPassword());
-        softly.assertThat(createUserRequest.getRole()).isEqualTo(createUserResponse.getRole());
+        CreateUserRequest createUserRequest = RandomModelGenerator.generate(CreateUserRequest.class);
+        CreateUserResponse createUserResponse = new ValidatedCrudRequester<CreateUserResponse>
+                (RequestSpecs.adminSpec(), Endpoint.ADMIN_USER, ResponseSpecs.entityWasCreated())
+                .post(createUserRequest);
+        ModelAssertions.assertThatModels(createUserRequest, createUserResponse).match();
 
         // запросить все созданные админом аккаунты и проверить, что созданный юзер там
-        List<GetAllUserResponse> allUsers = new GetAllUsersRequester(RequestSpecs.adminSpec(), ResponseSpecs.requestReturnsOK())
-                .post(null)
-                .extract().jsonPath().getList("",GetAllUserResponse.class);
+        List<GetAllUserResponse> allUsers = AdminSteps.gelAllUsers();
 
         // Находим созданного пользователя в списке
         GetAllUserResponse createdUserInList = allUsers.stream()
@@ -74,7 +66,7 @@ public class CreateUserTest extends BaseTest {
                 .role(role)
                 .build();
 
-        new AdminCreateUserRequester(RequestSpecs.adminSpec(), ResponseSpecs.requestReturnsBadRequest(errorKey, errorValue))
+        new CrudRequester(RequestSpecs.adminSpec(), Endpoint.ADMIN_USER, ResponseSpecs.requestReturnsBadRequest(errorKey, errorValue))
                 .post(createUserRequest);
     }
 }
