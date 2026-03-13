@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CustomerResponse {
+public class CustomerResponse extends BaseModel{
     private long id;
     private  String username;
     private String password;

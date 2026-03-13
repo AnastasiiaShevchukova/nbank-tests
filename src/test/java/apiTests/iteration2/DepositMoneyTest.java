@@ -37,6 +37,9 @@ public class DepositMoneyTest extends BaseTest {
         DepositMoneyResponse depositResponse = UserSteps.depositMoney(depositRequest, createUserRequest);
 
         ModelAssertions.assertThatModels(depositRequest, depositResponse).match();
+
+        // Проверка, что баланс изменился
+        UserSteps.checkAccountBalance(depositAmount, createUserRequest, createdAccountId);
     }
 
 
@@ -66,6 +69,9 @@ public class DepositMoneyTest extends BaseTest {
                 Endpoint.ACCOUNTS_DEPOSIT,
                 ResponseSpecs.requestReturnsBadRequestWithoutErrorKey(errorMsg))
                 .post(depositRequest);
+
+        // Проверка, что баланс не изменился
+        UserSteps.checkAccountBalance(0, createUserRequest, createdAccountId);
     }
 
     //Negative 2
@@ -86,6 +92,9 @@ public class DepositMoneyTest extends BaseTest {
                 Endpoint.ACCOUNTS_DEPOSIT,
                 ResponseSpecs.requestReturnsForbidden("Unauthorized access to account"))
                 .post(depositRequest);
+
+        // Проверка, что баланс не изменился
+        UserSteps.checkAccountBalance(0, createUserRequest, createdAccountId);
 
     }
 }

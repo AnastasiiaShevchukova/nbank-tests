@@ -27,6 +27,7 @@ public class ChangeNameTest extends BaseTest {
         CreateUserRequest userRequest = AdminSteps.createUser();
         ChangeNameResponse changeNameResponse = UserSteps.changeName(userRequest, "John Smith");
 
+        // проверка, что имя поменялось
         softly.assertThat(changeNameResponse.getMessage()).isEqualTo("Profile updated successfully");
         softly.assertThat(changeNameResponse.getCustomer().getUsername()).isEqualTo(userRequest.getUsername());
         softly.assertThat(changeNameResponse.getCustomer().getName()).isEqualTo("John Smith");
@@ -60,5 +61,7 @@ public class ChangeNameTest extends BaseTest {
                 ResponseSpecs.requestReturnsBadRequestWithoutErrorKey(errorMsg))
                 .update(changeNameRequest);
 
+        // проверка, что имя не поменялось
+        UserSteps.checkName(userRequest, null, "Имя изменилось, хотя не должно было");
     }
 }

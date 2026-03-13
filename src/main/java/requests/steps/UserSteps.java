@@ -2,6 +2,7 @@ package requests.steps;
 
 import io.restassured.response.ValidatableResponse;
 import models.*;
+import org.junit.jupiter.api.Assertions;
 import requests.skelethon.Endpoint;
 import requests.skelethon.requesters.CrudRequester;
 import requests.skelethon.requesters.ValidatedCrudRequester;
@@ -63,4 +64,27 @@ public class UserSteps {
                 .update(changeNameRequest);
         return response;
     }
+
+    public static void checkAccountBalance(double expectedBalance, CreateUserRequest createUserRequest, long accountId){
+        List<GetAllCustomerAccountsResponse> allAccounts = getAllCustomerAccounts(createUserRequest.getUsername(), createUserRequest.getPassword());
+        GetAllCustomerAccountsResponse createdAccountInList = allAccounts.stream()
+                .filter(account -> account.getId() == accountId)
+                .findFirst()
+                .orElse(null);
+
+        Assertions.assertNotNull(createdAccountInList, "Аккаунт не найден в списке");
+        Assertions.assertEquals(expectedBalance, createdAccountInList.getBalance(),
+                "Баланс аккаунта " + accountId + " не соответствует ожидаемому");
+    }
+
+    public static void checkName(CreateUserRequest user, String expectedName, String message){
+        CustomerResponse response = new ValidatedCrudRequester<CustomerResponse>
+                (RequestSpecs.authAsUserSpec(user.getUsername(), user.getPassword()),
+                        Endpoint.CUSTOMER_PROFILE_GET,
+                        ResponseSpecs.requestReturnsOK())
+                .get();
+
+        Assertions.assertEquals(expectedName, response.getName(), message);
+    }
+
 }
