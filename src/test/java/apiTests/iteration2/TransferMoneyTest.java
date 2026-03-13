@@ -59,6 +59,9 @@ public class TransferMoneyTest extends BaseTest {
         TransferMoneyResponse transferResponse = UserSteps.
                 transferMoney(transferMoneyRequest, createUser);
         ModelAssertions.assertThatModels(transferMoneyRequest, transferResponse).match();
+
+        // проверка, что баланс поменялся после трансфера
+        UserSteps.checkAccountBalance(depositAmount * depositCount - transferAmount, createUser, firstCreatedAccountId);
     }
 
 
@@ -73,7 +76,7 @@ public class TransferMoneyTest extends BaseTest {
     }
     @ParameterizedTest(name = "User can NOT transfer money")
     @MethodSource("moneyInvalidTransferData")
-    public void userCanNotDepositMoneyTest(Integer depositAmount, Integer transferAmount, Integer depositCount, String errorMsg) {
+    public void userCanNotTransferMoneyTest(Integer depositAmount, Integer transferAmount, Integer depositCount, String errorMsg) {
         CreateUserRequest createUser = AdminSteps.createUser();
 
         long firstCreatedAccountId = UserSteps.createAccount(createUser).getId();
@@ -102,5 +105,8 @@ public class TransferMoneyTest extends BaseTest {
                 Endpoint.ACCOUNTS_TRANSFER,
                 ResponseSpecs.requestReturnsBadRequestWithoutErrorKey(errorMsg))
                 .post(transferMoneyRequest);
+
+        // проверка, что баланс не поменялся после трансфера
+        UserSteps.checkAccountBalance(depositAmount * depositCount, createUser, firstCreatedAccountId);
     }
 }
