@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import models.*;
 
+import java.util.Map;
+
 @AllArgsConstructor
 @Getter
 public enum Endpoint {
@@ -46,7 +48,24 @@ public enum Endpoint {
             "/customer/profile",
             BaseModel.class,
             CustomerResponse.class
+    ),
+    ACCOUNTS_TRANSACTIONS(
+            "/accounts/{accountId}/transactions",
+            BaseModel.class,
+            GetAccountTransactionsResponse.class
     );
+
+    // Метод для подстановки path params
+    public String resolve(Map<String, Object> pathParams) {
+        String resolvedUrl = this.url;
+        for (Map.Entry<String, Object> entry : pathParams.entrySet()) {
+            resolvedUrl = resolvedUrl.replace(
+                    "{" + entry.getKey() + "}",
+                    entry.getValue().toString()
+            );
+        }
+        return resolvedUrl;
+    }
 
 
 
