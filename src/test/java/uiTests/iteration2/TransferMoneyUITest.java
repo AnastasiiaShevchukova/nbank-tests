@@ -26,7 +26,7 @@ import static com.codeborne.selenide.Selenide.*;
 import static com.codeborne.selenide.Selenide.switchTo;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-public class TransferMoneyTest {
+public class TransferMoneyUITest {
 
     @BeforeAll
     public static void setupSelenoid(){
@@ -89,15 +89,20 @@ public class TransferMoneyTest {
         executeJavaScript("localStorage.setItem('authToken', arguments[0]);", userAuthHeader);
         Selenide.open("/dashboard");
 
-        // Тест Шаг 1: Трансфер денег с первого аккаунта на второй аккаунт
+        // Тест Шаг 1: Клик "Make a Transfer" в меню на дашборде юзера
         $(Selectors.byText("\uD83D\uDD04 Make a Transfer")).click();
-
+        // Тест Шаг 2: Выбрать первый созданный аккаунт в селекте "Select Your Account:"
         $(".account-selector").selectOptionByValue(String.valueOf(firstCreatedAccountId));
+        // Тест Шаг 3: Ввести данные в поле "Recipient Name:"
         $(Selectors.byAttribute("placeholder", "Enter recipient name")).sendKeys("To me");
+        // Тест Шаг 4: Ввести данные второго аккаунта в поле "Recipient Account Number:"
         $(Selectors.byAttribute("placeholder", "Enter recipient account number")).sendKeys("ACC" + secondCreatedAccountId);
+        // Тест Шаг 5: Ввести данные о количестве переводимых денег в поле "Amount:"
         String transferAmountString = transferAmount.toString();
         $(Selectors.byAttribute("placeholder", "Enter amount")).sendKeys(transferAmountString);
+        // Тест Шаг 6: Отметить true чекбокс "Confirm details are correct"
         $("#confirmCheck").click();
+        // Тест Шаг 7: Нажать кнопку "🚀 Send Transfer"
         $$("button").findBy(exactText("🚀 Send Transfer")).click();
 
         // Проверка, что трансфер успешен на UI
@@ -159,15 +164,20 @@ public class TransferMoneyTest {
         executeJavaScript("localStorage.setItem('authToken', arguments[0]);", userAuthHeader);
         Selenide.open("/dashboard");
 
-        // Тест Шаг 1: Трансфер денег с первого аккаунта на второй аккаунт
+        // Тест Шаг 1: Клик "Make a Transfer" в меню на дашборде юзера
         $(Selectors.byText("\uD83D\uDD04 Make a Transfer")).click();
-
+        // Тест Шаг 2: Выбрать первый созданный аккаунт в селекте "Select Your Account:"
         $(".account-selector").selectOptionByValue(String.valueOf(firstCreatedAccountId));
+        // Тест Шаг 3: Ввести данные в поле "Recipient Name:"
         $(Selectors.byAttribute("placeholder", "Enter recipient name")).sendKeys("To me");
+        // Тест Шаг 4: Ввести данные второго аккаунта в поле "Recipient Account Number:"
         $(Selectors.byAttribute("placeholder", "Enter recipient account number")).sendKeys("ACC" + secondCreatedAccountId);
+        // Тест Шаг 5: Ввести данные о количестве переводимых денег в поле "Amount:"
         String transferAmountString = transferAmount.toString();
         $(Selectors.byAttribute("placeholder", "Enter amount")).sendKeys(transferAmountString);
+        // Тест Шаг 6: Отметить true чекбокс "Confirm details are correct"
         $("#confirmCheck").click();
+        // Тест Шаг 7: Нажать кнопку "🚀 Send Transfer"
         $$("button").findBy(exactText("🚀 Send Transfer")).click();
 
         // Проверка, что трансфер НЕ успешен на UI

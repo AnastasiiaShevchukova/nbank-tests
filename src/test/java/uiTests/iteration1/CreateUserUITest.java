@@ -20,7 +20,7 @@ import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class CreateUserTest {
+public class CreateUserUITest {
 
     @BeforeAll
     public static void setupSelenoid(){

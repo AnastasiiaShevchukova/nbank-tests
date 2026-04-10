@@ -23,7 +23,7 @@ import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-public class DepositMoneyTest {
+public class DepositMoneyUITest {
 
     @BeforeAll
     public static void setupSelenoid(){
@@ -63,10 +63,13 @@ public class DepositMoneyTest {
         executeJavaScript("localStorage.setItem('authToken', arguments[0]);", userAuthHeader);
         Selenide.open("/dashboard");
 
-        // Тест Шаг 1: Депозит денег и проверки
+        // Тест Шаг 1: Клик "Deposit Money" в меню на дашборде юзера
         $(Selectors.byText("\uD83D\uDCB0 Deposit Money")).click();
+        // Тест Шаг 2: Выбрать созданный аккаунт в селекте "Select Account:"
         $(".account-selector").selectOption("ACC" + createdAccountId + " (Balance: $0.00)");
+        // Тест Шаг 3: Ввести данные о количестве денег в поле "Enter Amount:"
         $(Selectors.byAttribute("placeholder", "Enter amount")).sendKeys(depositAmount);
+        // Тест Шаг 4: Нажать кнопку "💵 Deposit"
         $$("button").findBy(text("Deposit")).shouldHave(exactText("💵 Deposit")).click();
 
         // Проверка, что депозит успешен на UI
@@ -105,10 +108,13 @@ public class DepositMoneyTest {
         executeJavaScript("localStorage.setItem('authToken', arguments[0]);", userAuthHeader);
         Selenide.open("/dashboard");
 
-        // Тест Шаг 1: Депозит денег и проверки
+        // Тест Шаг 1: Клик "Deposit Money" в меню на дашборде юзера
         $(Selectors.byText("\uD83D\uDCB0 Deposit Money")).click();
+        // Тест Шаг 2: Выбрать созданный аккаунт в селекте "Select Account:"
         $(".account-selector").selectOption("ACC" + createdAccountId + " (Balance: $0.00)");
+        // Тест Шаг 3: Ввести данные о количестве денег в поле "Enter Amount:"
         $(Selectors.byAttribute("placeholder", "Enter amount")).sendKeys(depositAmount);
+        // Тест Шаг 4: Нажать кнопку "💵 Deposit"
         $$("button").findBy(text("Deposit")).shouldHave(exactText("💵 Deposit")).click();
 
         // Проверка, что депозит НЕ успешен на UI

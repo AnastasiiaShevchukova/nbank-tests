@@ -13,7 +13,7 @@ import java.util.Map;
 
 import static com.codeborne.selenide.Selenide.$;
 
-public class LoginUserTest {
+public class LoginUserUITest {
 
     @BeforeAll
     public static void setupSelenoid(){

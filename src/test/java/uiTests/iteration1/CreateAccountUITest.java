@@ -23,7 +23,7 @@ import static com.codeborne.selenide.Selenide.*;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-public class CreateAccountTest {
+public class CreateAccountUITest {
 
     @BeforeAll
     public static void setupSelenoid(){
