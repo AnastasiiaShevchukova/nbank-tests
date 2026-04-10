@@ -72,13 +72,13 @@ public class DepositMoneyUITest {
         // Тест Шаг 4: Нажать кнопку "💵 Deposit"
         $$("button").findBy(text("Deposit")).shouldHave(exactText("💵 Deposit")).click();
 
-        // Проверка, что депозит успешен на UI
+        // Проверка UI, что депозит успешен
         Alert alertAccount = switchTo().alert();
         String alertAccountText = alertAccount.getText();
         assertThat(alertAccountText).contains("✅ Successfully deposited $" + depositAmount + " to account ACC" + createdAccountId + "!");
         alertAccount.accept();
 
-        // Проверка, что депозит успешен на API (баланс аккаунта изменился)
+        // Проверка API, что депозит успешен (баланс аккаунта изменился)
         double depositAmountDouble = Double.parseDouble(depositAmount);
         UserSteps.checkAccountBalance(depositAmountDouble, user, createdAccountId);
     }
@@ -117,7 +117,7 @@ public class DepositMoneyUITest {
         // Тест Шаг 4: Нажать кнопку "💵 Deposit"
         $$("button").findBy(text("Deposit")).shouldHave(exactText("💵 Deposit")).click();
 
-        // Проверка, что депозит НЕ успешен на UI
+        // Проверка UI, что депозит НЕ успешен
         Alert alertAccount = switchTo().alert();
         String alertAccountText = alertAccount.getText();
 
@@ -129,7 +129,7 @@ public class DepositMoneyUITest {
                 .isTrue();
         alertAccount.accept();
 
-        // Проверка, что депозит НЕ успешен на API (баланс аккаунта равен 0)
+        // Проверка API, что депозит НЕ успешен (баланс аккаунта равен 0)
         UserSteps.checkAccountBalance(0, createUserRequest, createdAccountId);
     }
 }

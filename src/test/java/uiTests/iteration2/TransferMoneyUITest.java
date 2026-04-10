@@ -105,13 +105,13 @@ public class TransferMoneyUITest {
         // Тест Шаг 7: Нажать кнопку "🚀 Send Transfer"
         $$("button").findBy(exactText("🚀 Send Transfer")).click();
 
-        // Проверка, что трансфер успешен на UI
+        // Проверка UI, что трансфер успешен
         Alert alertAccount = switchTo().alert();
         String alertAccountText = alertAccount.getText();
         assertThat(alertAccountText).contains("✅ Successfully transferred $" + transferAmount + " to account ACC" + secondCreatedAccountId + "!");
         alertAccount.accept();
 
-        // Проверка, что трансфер успешен на API (баланс аккаунта изменился)
+        // Проверка API, что трансфер успешен (баланс аккаунта изменился)
         UserSteps.checkAccountBalance(depositAmount * depositCount - transferAmount, createUser, firstCreatedAccountId);
     }
 
@@ -180,7 +180,7 @@ public class TransferMoneyUITest {
         // Тест Шаг 7: Нажать кнопку "🚀 Send Transfer"
         $$("button").findBy(exactText("🚀 Send Transfer")).click();
 
-        // Проверка, что трансфер НЕ успешен на UI
+        // Проверка UI, что трансфер НЕ успешен
         Alert alertAccount = switchTo().alert();
         String alertAccountText = alertAccount.getText();
 
@@ -193,7 +193,7 @@ public class TransferMoneyUITest {
                 .isTrue();
         alertAccount.accept();
 
-        // Проверка, что трансфер НЕ успешен на API (баланс аккаунта не изменился)
+        // Проверка API, что трансфер НЕ успешен(баланс аккаунта не изменился)
         UserSteps.checkAccountBalance(depositAmount * depositCount, createUser, firstCreatedAccountId);
     }
 }
