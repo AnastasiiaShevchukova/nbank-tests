@@ -1,0 +1,77 @@
+package api.requests.skelethon;
+
+import api.models.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+
+import java.util.Map;
+
+@AllArgsConstructor
+@Getter
+public enum Endpoint {
+    ADMIN_USER(
+            "/admin/users",
+            CreateUserRequest.class,
+            CreateUserResponse.class
+    ),
+    LOGIN(
+            "/auth/login",
+            LoginUserRequest.class,
+            LoginUserResponse.class
+    ),
+    ACCOUNTS(
+            "/accounts",
+            BaseModel.class,
+            CreateAccountResponse.class
+    ),
+    ACCOUNTS_DEPOSIT(
+            "/accounts/deposit",
+            BaseModel.class,
+            DepositMoneyResponse.class
+    ),
+    ACCOUNTS_TRANSFER(
+            "/accounts/transfer",
+            BaseModel.class,
+            TransferMoneyResponse.class
+    ),
+    CUSTOMER_ACCOUNTS(
+            "/customer/accounts",
+            BaseModel.class,
+            GetAllCustomerAccountsResponse.class
+    ),
+    CUSTOMER_PROFILE(
+            "/customer/profile",
+            BaseModel.class,
+            ChangeNameResponse.class
+    ),
+    CUSTOMER_PROFILE_GET(
+            "/customer/profile",
+            BaseModel.class,
+            CustomerResponse.class
+    ),
+    ACCOUNTS_TRANSACTIONS(
+            "/accounts/{accountId}/transactions",
+            BaseModel.class,
+            GetAccountTransactionsResponse.class
+    );
+
+    // Метод для подстановки path params
+    public String resolve(Map<String, Object> pathParams) {
+        String resolvedUrl = this.url;
+        for (Map.Entry<String, Object> entry : pathParams.entrySet()) {
+            resolvedUrl = resolvedUrl.replace(
+                    "{" + entry.getKey() + "}",
+                    entry.getValue().toString()
+            );
+        }
+        return resolvedUrl;
+    }
+
+
+
+
+    private  final String url;
+    private  final Class<? extends BaseModel> requestModel;
+    private final Class<? extends BaseModel> responseModel;
+}

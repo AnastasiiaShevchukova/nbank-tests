@@ -1,22 +1,22 @@
 package apiTests.iteration2;
 
 import apiTests.BaseTest;
-import models.CreateUserRequest;
-import models.DepositMoneyRequest;
-import models.DepositMoneyResponse;
-import models.comparison.ModelAssertions;
+import api.models.CreateUserRequest;
+import api.models.DepositMoneyRequest;
+import api.models.DepositMoneyResponse;
+import api.models.comparison.ModelAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import requests.skelethon.Endpoint;
-import requests.skelethon.requesters.CrudRequester;
-import requests.steps.AdminSteps;
-import requests.steps.UserSteps;
-import specs.RequestSpecs;
-import specs.ResponseSpecs;
+import api.requests.skelethon.Endpoint;
+import api.requests.skelethon.requesters.CrudRequester;
+import api.requests.steps.AdminSteps;
+import api.requests.steps.UserSteps;
+import api.specs.RequestSpecs;
+import api.specs.ResponseSpecs;
 
 import java.util.stream.Stream;
 

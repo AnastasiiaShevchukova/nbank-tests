@@ -1,11 +1,11 @@
 package apiTests.iteration1;
 
 import apiTests.BaseTest;
-import models.CreateUserRequest;
-import models.GetAllCustomerAccountsResponse;
+import api.models.CreateUserRequest;
+import api.models.GetAllCustomerAccountsResponse;
 import org.junit.jupiter.api.Test;
-import requests.steps.AdminSteps;
-import requests.steps.UserSteps;
+import api.requests.steps.AdminSteps;
+import api.requests.steps.UserSteps;
 
 import java.util.List;
 
