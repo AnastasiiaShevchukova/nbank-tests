@@ -1,41 +1,15 @@
 package uiTests.iteration2;
 
-import com.codeborne.selenide.Configuration;
-import com.codeborne.selenide.Selectors;
-import com.codeborne.selenide.Selenide;
 import api.models.CreateUserRequest;
-import api.models.LoginUserRequest;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.openqa.selenium.Alert;
-import api.requests.skelethon.Endpoint;
-import api.requests.skelethon.requesters.CrudRequester;
 import api.requests.steps.AdminSteps;
 import api.requests.steps.UserSteps;
-import api.specs.RequestSpecs;
-import api.specs.ResponseSpecs;
+import ui.pages.BankAlerts;
+import ui.pages.DepositMoney;
+import uiTests.BaseUiTest;
 
-import java.util.Map;
-
-import static com.codeborne.selenide.Condition.exactText;
-import static com.codeborne.selenide.Condition.text;
-import static com.codeborne.selenide.Selenide.*;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-
-public class DepositMoneyUITest {
-
-    @BeforeAll
-    public static void setupSelenoid(){
-        Configuration.remote = "http://localhost:4444/wd/hub";
-        Configuration.baseUrl = "http://192.168.0.51:3000";
-        Configuration.browser = "chrome";
-        Configuration.browserSize = "1920x1080";
-
-        Configuration.browserCapabilities.setCapability("selenoid:options",
-                Map.of("enableVNC", true, "enableLog", true)
-        );
-    }
+public class DepositMoneyUITest extends BaseUiTest {
 
     //Позитив
     @ParameterizedTest(name = "User can deposit money 1 - 5000 rouble")
@@ -45,38 +19,16 @@ public class DepositMoneyUITest {
         // Предусловие Шаг 2: админ создает юзера
         // Предусловие Шаг 3: юзер логинится в банке
         CreateUserRequest user = AdminSteps.createUser();
-
-        String userAuthHeader = new CrudRequester(
-                RequestSpecs.unauthSpec(),
-                Endpoint.LOGIN,
-                ResponseSpecs.requestReturnsOK())
-                .post(LoginUserRequest.builder().username(user.getUsername()).password(user.getPassword()).build())
-                .extract()
-                .header("Authorization");
-        Selenide.open("/");
-        executeJavaScript("localStorage.setItem('authToken', arguments[0]);", userAuthHeader);
-
+        authAsUser(user);
         // Предусловие Шаг 4: юзер создает аккаунт
-        long createdAccountId = UserSteps.createAccount(user).getId();
-
-        Selenide.open("/");
-        executeJavaScript("localStorage.setItem('authToken', arguments[0]);", userAuthHeader);
-        Selenide.open("/dashboard");
-
-        // Тест Шаг 1: Клик "Deposit Money" в меню на дашборде юзера
-        $(Selectors.byText("\uD83D\uDCB0 Deposit Money")).click();
-        // Тест Шаг 2: Выбрать созданный аккаунт в селекте "Select Account:"
-        $(".account-selector").selectOption("ACC" + createdAccountId + " (Balance: $0.00)");
-        // Тест Шаг 3: Ввести данные о количестве денег в поле "Enter Amount:"
-        $(Selectors.byAttribute("placeholder", "Enter amount")).sendKeys(depositAmount);
-        // Тест Шаг 4: Нажать кнопку "💵 Deposit"
-        $$("button").findBy(text("Deposit")).shouldHave(exactText("💵 Deposit")).click();
-
-        // Проверка UI, что депозит успешен
-        Alert alertAccount = switchTo().alert();
-        String alertAccountText = alertAccount.getText();
-        assertThat(alertAccountText).contains("✅ Successfully deposited $" + depositAmount + " to account ACC" + createdAccountId + "!");
-        alertAccount.accept();
+        long createdAccountId =  UserSteps.createAccount(user).getId();
+        // ШАГИ ТЕСТА:
+        // Открыть страницу депозита денег
+        // Выбрать созданный аккаунт в селекте "Select Account:"
+        // Ввести данные о количестве денег в поле "Enter Amount:"
+        // Нажать кнопку "💵 Deposit"
+        new DepositMoney().open().depositMoneyToAccount(createdAccountId, depositAmount)
+                .checkAlertMessageAndAccept(BankAlerts.SUCCESSFULLY_DEPOSITED_MONEY_TO_ACCOUNT.getMessage(), depositAmount, createdAccountId);
 
         // Проверка API, что депозит успешен (баланс аккаунта изменился)
         double depositAmountDouble = Double.parseDouble(depositAmount);
@@ -84,52 +36,50 @@ public class DepositMoneyUITest {
     }
 
     //Negative 1:
-    @ParameterizedTest(name = "User can not deposit money < 0 or > 5000 rouble")
-    @ValueSource(strings = {"-1", "0", "5001"})
+    @ParameterizedTest(name = "User can not deposit money <= 0 5000 rouble")
+    @ValueSource(strings = {"-1", "0"})
     public void userCanNotDepositMoneyTest(String depositAmount) {
         // Предусловие ШАГ 1: админ логинится в банке
         // Предусловие Шаг 2: админ создает юзера
         // Предусловие Шаг 3: юзер логинится в банке
-        CreateUserRequest createUserRequest = AdminSteps.createUser();
-
-        String userAuthHeader = new CrudRequester(
-                RequestSpecs.unauthSpec(),
-                Endpoint.LOGIN,
-                ResponseSpecs.requestReturnsOK())
-                .post(LoginUserRequest.builder().username(createUserRequest.getUsername()).password(createUserRequest.getPassword()).build())
-                .extract()
-                .header("Authorization");
-        Selenide.open("/");
-        executeJavaScript("localStorage.setItem('authToken', arguments[0]);", userAuthHeader);
-
+        CreateUserRequest user = AdminSteps.createUser();
+        authAsUser(user);
         // Предусловие Шаг 4: юзер создает аккаунт
-        long createdAccountId = UserSteps.createAccount(createUserRequest).getId();
-        Selenide.open("/");
-        executeJavaScript("localStorage.setItem('authToken', arguments[0]);", userAuthHeader);
-        Selenide.open("/dashboard");
-
-        // Тест Шаг 1: Клик "Deposit Money" в меню на дашборде юзера
-        $(Selectors.byText("\uD83D\uDCB0 Deposit Money")).click();
-        // Тест Шаг 2: Выбрать созданный аккаунт в селекте "Select Account:"
-        $(".account-selector").selectOption("ACC" + createdAccountId + " (Balance: $0.00)");
-        // Тест Шаг 3: Ввести данные о количестве денег в поле "Enter Amount:"
-        $(Selectors.byAttribute("placeholder", "Enter amount")).sendKeys(depositAmount);
-        // Тест Шаг 4: Нажать кнопку "💵 Deposit"
-        $$("button").findBy(text("Deposit")).shouldHave(exactText("💵 Deposit")).click();
-
+        long createdAccountId = UserSteps.createAccount(user).getId();
+        // ШАГИ ТЕСТА:
+        // Открыть страницу депозита денег
+        // Выбрать созданный аккаунт в селекте "Select Account:"
+        // Ввести данные о количестве денег в поле "Enter Amount:"
+        // Нажать кнопку "💵 Deposit"
         // Проверка UI, что депозит НЕ успешен
-        Alert alertAccount = switchTo().alert();
-        String alertAccountText = alertAccount.getText();
-
-        boolean isValidAmountError = alertAccountText.contains("❌ Please enter a valid amount.");
-        boolean isLimitError = alertAccountText.contains("❌ Please deposit less or equal to 5000$.");
-
-        assertThat(isValidAmountError || isLimitError)
-                .as("Ожидалась ошибка валидации депозита")
-                .isTrue();
-        alertAccount.accept();
+        new DepositMoney().open().depositMoneyToAccount(createdAccountId, depositAmount)
+                .checkAlertMessageAndAccept(BankAlerts.PLEASE_ENTER_A_VALID_AMOUNT.getMessage(), depositAmount, createdAccountId);
 
         // Проверка API, что депозит НЕ успешен (баланс аккаунта равен 0)
-        UserSteps.checkAccountBalance(0, createUserRequest, createdAccountId);
+        UserSteps.checkAccountBalance(0, user, createdAccountId);
+    }
+
+    //Negative 2:
+    @ParameterizedTest(name = "User can not deposit money > 5000 rouble")
+    @ValueSource(strings = {"5001"})
+    public void userCanNotDepositMoneyMore5000Test(String depositAmount) {
+        // Предусловие ШАГ 1: админ логинится в банке
+        // Предусловие Шаг 2: админ создает юзера
+        // Предусловие Шаг 3: юзер логинится в банке
+        CreateUserRequest user = AdminSteps.createUser();
+        authAsUser(user);
+        // Предусловие Шаг 4: юзер создает аккаунт
+        long createdAccountId = UserSteps.createAccount(user).getId();
+        // ШАГИ ТЕСТА:
+        // Открыть страницу депозита денег
+        // Выбрать созданный аккаунт в селекте "Select Account:"
+        // Ввести данные о количестве денег в поле "Enter Amount:"
+        // Нажать кнопку "💵 Deposit"
+        // Проверка UI, что депозит НЕ успешен
+        new DepositMoney().open().depositMoneyToAccount(createdAccountId, depositAmount)
+                .checkAlertMessageAndAccept(BankAlerts.PLEASE_DEPOSIT_LESS_OR_EQUAL_TO_5000.getMessage(), depositAmount, createdAccountId);
+
+        // Проверка API, что депозит НЕ успешен (баланс аккаунта равен 0)
+        UserSteps.checkAccountBalance(0, user, createdAccountId);
     }
 }
