@@ -50,23 +50,23 @@ public class CreateUserTest extends BaseTest {
     //Negative:
     public static Stream<Arguments> userInvalidData() {
         return Stream.of(
-                Arguments.of("    ", "Password22$", "USER", "username", "Username cannot be blank"),
-                Arguments.of("ab", "Password22$", "USER", "username", "Username must be between 3 and 15 characters"),
-                Arguments.of("abc$", "Password22$", "USER", "username", "Username must contain only letters, digits, dashes, underscores, and dots"),
-                Arguments.of("abc%", "Password22$", "USER", "username", "Username must contain only letters, digits, dashes, underscores, and dots")
+                Arguments.of("    ", "Password22$", "USER", "username", List.of("Username cannot be blank", "Username must contain only letters, digits, dashes, underscores, and dots")),
+                Arguments.of("ab", "Password22$", "USER", "username", List.of("Username must be between 3 and 15 characters")),
+                Arguments.of("abc$", "Password22$", "USER", "username", List.of("Username must contain only letters, digits, dashes, underscores, and dots")),
+                Arguments.of("abc%", "Password22$", "USER", "username", List.of("Username must contain only letters, digits, dashes, underscores, and dots"))
         );
     }
 
     @MethodSource("userInvalidData")
     @ParameterizedTest
-    public void adminCanNotCreateUserWithInvalidDataTest(String username, String password, String role, String errorKey, String errorValue) {
+    public void adminCanNotCreateUserWithInvalidDataTest(String username, String password, String role, String errorKey, List<String> errorValues) {
         CreateUserRequest createUserRequest = CreateUserRequest.builder()
                 .username(username)
                 .password(password)
                 .role(role)
                 .build();
 
-        new CrudRequester(RequestSpecs.adminSpec(), Endpoint.ADMIN_USER, ResponseSpecs.requestReturnsBadRequest(errorKey, errorValue))
+        new CrudRequester(RequestSpecs.adminSpec(), Endpoint.ADMIN_USER, ResponseSpecs.requestReturnsBadRequest(errorKey, errorValues))
                 .post(createUserRequest);
     }
 }

@@ -8,10 +8,12 @@ import api.models.comparison.ModelAssertions;
 import common.annotations.AdminSession;
 import common.annotations.Browsers;
 import org.junit.jupiter.api.Test;
+import ui.elements.UserBage;
 import ui.pages.AdminPanel;
 import ui.pages.BankAlerts;
 import uiTests.BaseUiTest;
 
+import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -27,11 +29,10 @@ public class CreateUserUITest extends BaseUiTest {
         // ШАГ 3: проверка, что алерт "✅ User created successfully!"
         // ШАГ 4: проверка, что юзер отображается на UI
         CreateUserRequest newUser = RandomModelGenerator.generate(CreateUserRequest.class);
-        assertTrue(new AdminPanel().open().createUser(newUser.getUsername(), newUser.getPassword())
+        UserBage newUserBage = new AdminPanel().open().createUser(newUser.getUsername(), newUser.getPassword())
                 .checkAlertMessageAndAccept(BankAlerts.USER_CREATED_SUCCESSFULLY.getMessage())
-                .getAllUsers()
-                .stream().anyMatch(userBage -> userBage.getUsername().equals(newUser.getUsername())));
-
+                .findUserByUsername(newUser.getUsername());
+        assertThat(newUserBage).as("UserBage should exist on Dashboard after user creation").isNotNull();
         // ШАГ 5: проверка, что юзер создан на API
 
         CreateUserResponse createdUser = AdminSteps.getAllUsers().stream()
