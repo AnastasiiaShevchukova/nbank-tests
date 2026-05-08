@@ -8,6 +8,7 @@ import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import org.openqa.selenium.Alert;
 import ui.elements.BaseElement;
+import common.utils.RetryUtils;
 
 import java.util.List;
 import java.util.function.Function;
@@ -32,10 +33,23 @@ public abstract class BasePage<T extends BasePage> {
     }
 
     public T checkAlertMessageAndAccept(String alert, Object... args) {
-        Alert a = switchTo().alert();
         String expected = String.format(alert, args);
-        assertThat(a.getText()).contains(expected);
-        a.accept();
+        RetryUtils.retry(
+                () -> {
+                    Alert a = switchTo().alert();
+
+                    if (a.getText().contains(expected)) {
+                        a.accept();
+                        return true;
+                    }
+
+                    return false;
+                },
+                Boolean::booleanValue,
+                10,
+                1000
+        );
+
         return (T) this;
     }
 

@@ -14,7 +14,7 @@ import uiTests.BaseUiTest;
 public class LoginUserUITest extends BaseUiTest {
 
     @Test
-    @Browsers({"firefox"})
+    @Browsers({"chrome"})
     public void adminCanLoginWithCorrectDataTest(){
         CreateUserRequest admin = CreateUserRequest.getAdmin();
 

@@ -16,5 +16,5 @@ public class AccountResponse {
     private Long id;
     private String accountNumber;
     private double balance;
-    private List<String> transactions;
+    private List<TransactionResponse> transactions;
 }

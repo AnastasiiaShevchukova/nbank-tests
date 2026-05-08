@@ -17,23 +17,32 @@ public class RetryUtils {
             Predicate<T> condition,
             int maxAttempts,
             long delayMills) {
-        T result = null;
-        int attempts = 0;
+        Throwable lastError = null;
 
-        while (attempts < maxAttempts) {
-            attempts++;
-            result = action.get();
+        for (int attempts = 1; attempts <= maxAttempts; attempts++) {
 
-            if (condition.test(result)) {
-                return result;
+            try {
+                T result = action.get();
+
+                if (condition.test(result)) {
+                    return result;
+                }
+
+            } catch (Throwable e) {
+                lastError = e;
             }
 
             try {
                 Thread.sleep(delayMills);
             } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
                 throw new RuntimeException(e);
             }
         }
-        throw new RuntimeException("Retry failed after " + maxAttempts + "attempts!");
+
+        throw new RuntimeException(
+                "Retry failed after " + maxAttempts + " attempts",
+                lastError
+        );
     }
 }
