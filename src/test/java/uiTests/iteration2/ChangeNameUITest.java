@@ -2,11 +2,13 @@ package uiTests.iteration2;
 
 import com.codeborne.selenide.Selenide;
 import api.models.CreateUserRequest;
+import common.annotations.Browsers;
+import common.annotations.UserSession;
+import common.storage.SessionStorage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import api.requests.steps.AdminSteps;
 import api.requests.steps.UserSteps;
 import ui.pages.BankAlerts;
 import ui.pages.EditProfile;
@@ -22,12 +24,13 @@ public class ChangeNameUITest extends BaseUiTest {
     // Positive 1:
     @Test
     @DisplayName("User can change name")
+    @UserSession()
+    @Browsers({"chrome"})
     public void userCanChangeNameTest() {
         // Предусловие ШАГ 1: админ логинится в банке
         // Предусловие Шаг 2: админ создает юзера
         // Предусловие Шаг 3: юзер логинится в банке
-        CreateUserRequest user = AdminSteps.createUser();
-        authAsUser(user);
+        CreateUserRequest user = SessionStorage.getUser();
         // ШАГИ ТЕСТА:
         // Тест Шаг 1: Открыть меню изменения имени юзера
         // Тест Шаг 2: Ввести новое имя пользователя
@@ -46,12 +49,13 @@ public class ChangeNameUITest extends BaseUiTest {
     //Negative 1:
     @ParameterizedTest(name = "User can NOT change name {0}")
     @ValueSource(strings = {"John", "John John John", "", "     "})
+    @UserSession()
+    @Browsers({"chrome"})
     public void userCanNotChangeNameTest(String newNameValue) {
         // Предусловие ШАГ 1: админ логинится в банке
         // Предусловие Шаг 2: админ создает юзера
         // Предусловие Шаг 3: юзер логинится в банке
-        CreateUserRequest user = AdminSteps.createUser();
-        authAsUser(user);
+        CreateUserRequest user = SessionStorage.getUser();
         // ШАГИ ТЕСТА:
         // Тест Шаг 1: Открыть меню изменения имени юзера
         // Тест Шаг 2: Ввести новое имя пользователя
@@ -70,12 +74,13 @@ public class ChangeNameUITest extends BaseUiTest {
     //Negative 2:
     @ParameterizedTest(name = "User can NOT change name {0}")
     @ValueSource(strings = {"123 123", "^$# **& ^$# **&"})
+    @UserSession()
+    @Browsers({"chrome"})
     public void userCanNotChange2NameTest(String newNameValue) {
         // Предусловие ШАГ 1: админ логинится в банке
         // Предусловие Шаг 2: админ создает юзера
         // Предусловие Шаг 3: юзер логинится в банке
-        CreateUserRequest user = AdminSteps.createUser();
-        authAsUser(user);
+        CreateUserRequest user = SessionStorage.getUser();
         // ШАГИ ТЕСТА:
         // Тест Шаг 1: Открыть меню изменения имени юзера
         // Тест Шаг 2: Ввести новое имя пользователя

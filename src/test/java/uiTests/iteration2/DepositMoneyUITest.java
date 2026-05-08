@@ -1,9 +1,11 @@
 package uiTests.iteration2;
 
 import api.models.CreateUserRequest;
+import common.annotations.Browsers;
+import common.annotations.UserSession;
+import common.storage.SessionStorage;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import api.requests.steps.AdminSteps;
 import api.requests.steps.UserSteps;
 import ui.pages.BankAlerts;
 import ui.pages.DepositMoney;
@@ -14,12 +16,13 @@ public class DepositMoneyUITest extends BaseUiTest {
     //Позитив
     @ParameterizedTest(name = "User can deposit money 1 - 5000 rouble")
     @ValueSource(strings = {"1", "2500", "4999", "5000"})
+    @UserSession()
+    @Browsers({"chrome"})
     public void userCanDepositMoneyTest(String depositAmount) {
         // Предусловие ШАГ 1: админ логинится в банке
         // Предусловие Шаг 2: админ создает юзера
         // Предусловие Шаг 3: юзер логинится в банке
-        CreateUserRequest user = AdminSteps.createUser();
-        authAsUser(user);
+        CreateUserRequest user = SessionStorage.getUser();
         // Предусловие Шаг 4: юзер создает аккаунт
         long createdAccountId =  UserSteps.createAccount(user).getId();
         // ШАГИ ТЕСТА:
@@ -38,12 +41,13 @@ public class DepositMoneyUITest extends BaseUiTest {
     //Negative 1:
     @ParameterizedTest(name = "User can not deposit money <= 0 5000 rouble")
     @ValueSource(strings = {"-1", "0"})
+    @UserSession()
+    @Browsers({"chrome"})
     public void userCanNotDepositMoneyTest(String depositAmount) {
         // Предусловие ШАГ 1: админ логинится в банке
         // Предусловие Шаг 2: админ создает юзера
         // Предусловие Шаг 3: юзер логинится в банке
-        CreateUserRequest user = AdminSteps.createUser();
-        authAsUser(user);
+        CreateUserRequest user = SessionStorage.getUser();
         // Предусловие Шаг 4: юзер создает аккаунт
         long createdAccountId = UserSteps.createAccount(user).getId();
         // ШАГИ ТЕСТА:
@@ -62,12 +66,13 @@ public class DepositMoneyUITest extends BaseUiTest {
     //Negative 2:
     @ParameterizedTest(name = "User can not deposit money > 5000 rouble")
     @ValueSource(strings = {"5001"})
+    @UserSession()
+    @Browsers({"chrome"})
     public void userCanNotDepositMoneyMore5000Test(String depositAmount) {
         // Предусловие ШАГ 1: админ логинится в банке
         // Предусловие Шаг 2: админ создает юзера
         // Предусловие Шаг 3: юзер логинится в банке
-        CreateUserRequest user = AdminSteps.createUser();
-        authAsUser(user);
+        CreateUserRequest user = SessionStorage.getUser();
         // Предусловие Шаг 4: юзер создает аккаунт
         long createdAccountId = UserSteps.createAccount(user).getId();
         // ШАГИ ТЕСТА:

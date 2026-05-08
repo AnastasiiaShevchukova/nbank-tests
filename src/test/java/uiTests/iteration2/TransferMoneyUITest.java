@@ -2,10 +2,12 @@ package uiTests.iteration2;
 
 import api.models.CreateUserRequest;
 import api.models.DepositMoneyRequest;
+import common.annotations.Browsers;
+import common.annotations.UserSession;
+import common.storage.SessionStorage;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import api.requests.steps.AdminSteps;
 import api.requests.steps.UserSteps;
 import ui.pages.BankAlerts;
 import ui.pages.TransferMoney;
@@ -26,12 +28,13 @@ public class TransferMoneyUITest extends BaseUiTest {
     }
     @ParameterizedTest(name = "User can transfer money 1 - 10 000 rouble")
     @MethodSource("moneyValidTransferData")
+    @UserSession()
+    @Browsers({"chrome"})
     public void userCanTransferMoneyTest(Integer depositAmount, Integer transferAmount, Integer depositCount) {
         // Предусловие ШАГ 1: админ логинится в банке
         // Предусловие Шаг 2: админ создает юзера
         // Предусловие Шаг 3: юзер логинится в банке
-        CreateUserRequest user = AdminSteps.createUser();
-        authAsUser(user);
+        CreateUserRequest user = SessionStorage.getUser();
         // Предусловие Шаг 4: юзер создает первый аккаунт
         long firstCreatedAccountId = UserSteps.createAccount(user).getId();
 
@@ -75,13 +78,13 @@ public class TransferMoneyUITest extends BaseUiTest {
     }
     @ParameterizedTest(name = "User can NOT transfer money <=0")
     @MethodSource("moneyInvalid1TransferData")
+    @UserSession()
+    @Browsers({"chrome"})
     public void userCanNotTransferZeroMoneyTest(Integer depositAmount, Integer transferAmount, Integer depositCount) {
         // Предусловие ШАГ 1: админ логинится в банке
         // Предусловие Шаг 2: админ создает юзера
         // Предусловие Шаг 3: юзер логинится в банке
-        CreateUserRequest user = AdminSteps.createUser();
-        authAsUser(user);
-
+        CreateUserRequest user = SessionStorage.getUser();
         // Предусловие Шаг 4: юзер создает первый аккаунт
         long firstCreatedAccountId = UserSteps.createAccount(user).getId();
 
@@ -124,13 +127,13 @@ public class TransferMoneyUITest extends BaseUiTest {
     }
     @ParameterizedTest(name = "User can NOT transfer money > 10 000")
     @MethodSource("moneyInvalid2TransferData")
+    @UserSession()
+    @Browsers({"chrome"})
     public void userCanNotTransferMoneyMore10000Test(Integer depositAmount, Integer transferAmount, Integer depositCount) {
         // Предусловие ШАГ 1: админ логинится в банке
         // Предусловие Шаг 2: админ создает юзера
         // Предусловие Шаг 3: юзер логинится в банке
-        CreateUserRequest user = AdminSteps.createUser();
-        authAsUser(user);
-
+        CreateUserRequest user = SessionStorage.getUser();
         // Предусловие Шаг 4: юзер создает первый аккаунт
         long firstCreatedAccountId = UserSteps.createAccount(user).getId();
 
@@ -174,13 +177,13 @@ public class TransferMoneyUITest extends BaseUiTest {
     }
     @ParameterizedTest(name = "User can NOT transfer money")
     @MethodSource("moneyInvalid3TransferData")
+    @UserSession()
+    @Browsers({"chrome"})
     public void userCanNotTransferMoneyTest(Integer depositAmount, Integer transferAmount, Integer depositCount) {
         // Предусловие ШАГ 1: админ логинится в банке
         // Предусловие Шаг 2: админ создает юзера
         // Предусловие Шаг 3: юзер логинится в банке
-        CreateUserRequest user = AdminSteps.createUser();
-        authAsUser(user);
-
+        CreateUserRequest user = SessionStorage.getUser();
         // Предусловие Шаг 4: юзер создает первый аккаунт
         long firstCreatedAccountId = UserSteps.createAccount(user).getId();
 
