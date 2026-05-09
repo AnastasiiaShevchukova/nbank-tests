@@ -1,0 +1,167 @@
+# Анализ распределения тестов между воркерами:
+
+Thread ForkJoinPool-1-worker-1: Test finished apiTests.iteration1.[1]     , Password22$, USER, username, [Username cannot be blank, Username must contain only letters, digits, dashes, underscores, and dots]
+Thread ForkJoinPool-1-worker-1: Test duration apiTests.iteration1.[1]     , Password22$, USER, username, [Username cannot be blank, Username must contain only letters, digits, dashes, underscores, and dots], test duration 905 ms
+Thread ForkJoinPool-1-worker-1: Test finished apiTests.iteration1.[2] ab, Password22$, USER, username, [Username must be between 3 and 15 characters]
+Thread ForkJoinPool-1-worker-1: Test duration apiTests.iteration1.[2] ab, Password22$, USER, username, [Username must be between 3 and 15 characters], test duration 88 ms
+Thread ForkJoinPool-1-worker-1: Test finished apiTests.iteration1.[3] abc$, Password22$, USER, username, [Username must contain only letters, digits, dashes, underscores, and dots]
+Thread ForkJoinPool-1-worker-1: Test duration apiTests.iteration1.[3] abc$, Password22$, USER, username, [Username must contain only letters, digits, dashes, underscores, and dots], test duration 118 ms
+Thread ForkJoinPool-1-worker-1: Test finished apiTests.iteration1.[4] abc%, Password22$, USER, username, [Username must contain only letters, digits, dashes, underscores, and dots]
+Thread ForkJoinPool-1-worker-1: Test duration apiTests.iteration1.[4] abc%, Password22$, USER, username, [Username must contain only letters, digits, dashes, underscores, and dots], test duration 152 ms
+Thread ForkJoinPool-1-worker-18: Test finished apiTests.iteration2.User can not deposit money into ANOTHER ACCOUNT
+Thread ForkJoinPool-1-worker-18: Test duration apiTests.iteration2.User can not deposit money into ANOTHER ACCOUNT, test duration 616 ms
+Thread ForkJoinPool-1-worker-1: Test finished apiTests.iteration1.adminCanCreateUserWithCorrectDataTest()
+Thread ForkJoinPool-1-worker-1: Test duration apiTests.iteration1.adminCanCreateUserWithCorrectDataTest(), test duration 1056 ms
+Thread ForkJoinPool-1-worker-1: Test finished apiTests.iteration1.userCanCreateAccountTest()
+Thread ForkJoinPool-1-worker-1: Test duration apiTests.iteration1.userCanCreateAccountTest(), test duration 517 ms
+Thread ForkJoinPool-1-worker-19: Test finished apiTests.iteration2.User can not deposit money < 0 or > 5000 rouble
+Thread ForkJoinPool-1-worker-19: Test duration apiTests.iteration2.User can not deposit money < 0 or > 5000 rouble, test duration 581 ms
+Thread ForkJoinPool-1-worker-1: Test finished apiTests.iteration1.adminCanGenerateAuthTokenTest()
+Thread ForkJoinPool-1-worker-1: Test duration apiTests.iteration1.adminCanGenerateAuthTokenTest(), test duration 101 ms
+Thread ForkJoinPool-1-worker-1: Test finished apiTests.iteration1.userCanGenerateAuthTokenTest()
+Thread ForkJoinPool-1-worker-1: Test duration apiTests.iteration1.userCanGenerateAuthTokenTest(), test duration 293 ms
+Thread ForkJoinPool-1-worker-18: Test finished apiTests.iteration2.User can deposit money 1 - 5000 rouble
+Thread ForkJoinPool-1-worker-18: Test duration apiTests.iteration2.User can deposit money 1 - 5000 rouble, test duration 721 ms
+Thread ForkJoinPool-1-worker-19: Test finished apiTests.iteration2.User can not deposit money < 0 or > 5000 rouble
+Thread ForkJoinPool-1-worker-19: Test duration apiTests.iteration2.User can not deposit money < 0 or > 5000 rouble, test duration 709 ms
+Thread ForkJoinPool-1-worker-1: Test finished apiTests.iteration2.User can NOT change name
+Thread ForkJoinPool-1-worker-1 Test duration apiTests.iteration2.User can NOT change name, test duration 510 ms
+Thread ForkJoinPool-1-worker-1: Test started apiTests.iteration2.User can NOT change name
+Thread ForkJoinPool-1-worker-18: Test finished apiTests.iteration2.User can deposit money 1 - 5000 rouble
+Thread ForkJoinPool-1-worker-18 Test duration apiTests.iteration2.User can deposit money 1 - 5000 rouble, test duration 623 ms
+Thread ForkJoinPool-1-worker-18: Test started apiTests.iteration2.User can deposit money 1 - 5000 rouble
+Thread ForkJoinPool-1-worker-19: Test finished apiTests.iteration2.User can not deposit money < 0 or > 5000 rouble
+Thread ForkJoinPool-1-worker-19 Test duration apiTests.iteration2.User can not deposit money < 0 or > 5000 rouble, test duration 645 ms
+Thread ForkJoinPool-1-worker-19: Test started apiTests.iteration2.User can deposit money 1 - 5000 rouble
+Thread ForkJoinPool-1-worker-1: Test finished apiTests.iteration2.User can NOT change name
+Thread ForkJoinPool-1-worker-1 Test duration apiTests.iteration2.User can NOT change name, test duration 593 ms
+Thread ForkJoinPool-1-worker-1: Test started apiTests.iteration2.User can NOT change name
+Thread ForkJoinPool-1-worker-18: Test finished apiTests.iteration2.User can deposit money 1 - 5000 rouble
+Thread ForkJoinPool-1-worker-18 Test duration apiTests.iteration2.User can deposit money 1 - 5000 rouble, test duration 491 ms
+Thread ForkJoinPool-1-worker-19: Test finished apiTests.iteration2.User can deposit money 1 - 5000 rouble
+Thread ForkJoinPool-1-worker-19 Test duration apiTests.iteration2.User can deposit money 1 - 5000 rouble, test duration 595 ms
+Thread ForkJoinPool-1-worker-18: Test started apiTests.iteration2.User can transfer money 1 - 10 000 rouble
+Thread ForkJoinPool-1-worker-1: Test finished apiTests.iteration2.User can NOT change name
+Thread ForkJoinPool-1-worker-1 Test duration apiTests.iteration2.User can NOT change name, test duration 443 ms
+Thread ForkJoinPool-1-worker-1: Test started apiTests.iteration2.User can NOT change name
+Thread ForkJoinPool-1-worker-21: Test started apiTests.iteration2.User can NOT transfer money
+Thread ForkJoinPool-1-worker-1: Test finished apiTests.iteration2.User can NOT change name
+Thread ForkJoinPool-1-worker-1 Test duration apiTests.iteration2.User can NOT change name, test duration 528 ms
+Thread ForkJoinPool-1-worker-1: Test started apiTests.iteration2.User can NOT change name
+Thread ForkJoinPool-1-worker-18: Test finished apiTests.iteration2.User can transfer money 1 - 10 000 rouble
+Thread ForkJoinPool-1-worker-18 Test duration apiTests.iteration2.User can transfer money 1 - 10 000 rouble, test duration 1173 ms
+Thread ForkJoinPool-1-worker-18: Test started apiTests.iteration2.User can transfer money 1 - 10 000 rouble
+Thread ForkJoinPool-1-worker-1: Test finished apiTests.iteration2.User can NOT change name
+Thread ForkJoinPool-1-worker-1 Test duration apiTests.iteration2.User can NOT change name, test duration 734 ms
+Thread ForkJoinPool-1-worker-1: Test started apiTests.iteration2.User can NOT change name
+Thread ForkJoinPool-1-worker-21: Test finished apiTests.iteration2.User can NOT transfer money
+Thread ForkJoinPool-1-worker-21 Test duration apiTests.iteration2.User can NOT transfer money, test duration 1388 ms
+Thread ForkJoinPool-1-worker-21: Test started apiTests.iteration2.User can NOT transfer money
+Thread ForkJoinPool-1-worker-1: Test finished apiTests.iteration2.User can NOT change name
+Thread ForkJoinPool-1-worker-1 Test duration apiTests.iteration2.User can NOT change name, test duration 790 ms
+Thread ForkJoinPool-1-worker-1: Test started apiTests.iteration2.User can change name
+Thread ForkJoinPool-1-worker-18: Test finished apiTests.iteration2.User can transfer money 1 - 10 000 rouble
+Thread ForkJoinPool-1-worker-18 Test duration apiTests.iteration2.User can transfer money 1 - 10 000 rouble, test duration 1385 ms
+Thread ForkJoinPool-1-worker-18: Test started apiTests.iteration2.User can transfer money 1 - 10 000 rouble
+Thread ForkJoinPool-1-worker-1: Test finished apiTests.iteration2.User can change name
+Thread ForkJoinPool-1-worker-1 Test duration apiTests.iteration2.User can change name, test duration 559 ms
+Thread ForkJoinPool-1-worker-22: Test started apiTests.iteration2.User can NOT transfer money
+Thread ForkJoinPool-1-worker-21: Test finished apiTests.iteration2.User can NOT transfer money
+Thread ForkJoinPool-1-worker-21 Test duration apiTests.iteration2.User can NOT transfer money, test duration 13 ms
+Thread ForkJoinPool-1-worker-24: Test started apiTests.iteration2.User can NOT transfer money
+Thread ForkJoinPool-1-worker-18: Test finished apiTests.iteration2.User can transfer money 1 - 10 000 rouble
+Thread ForkJoinPool-1-worker-18 Test duration apiTests.iteration2.User can transfer money 1 - 10 000 rouble, test duration 940 ms
+Thread ForkJoinPool-1-worker-18: Test started apiTests.iteration2.User can transfer money 1 - 10 000 rouble
+Thread ForkJoinPool-1-worker-22: Test finished apiTests.iteration2.User can NOT transfer money
+Thread ForkJoinPool-1-worker-22 Test duration apiTests.iteration2.User can NOT transfer money, test duration 548 ms
+Thread ForkJoinPool-1-worker-24: Test finished apiTests.iteration2.User can NOT transfer money
+Thread ForkJoinPool-1-worker-24 Test duration apiTests.iteration2.User can NOT transfer money, test duration 764 ms
+Thread ForkJoinPool-1-worker-18: Test finished apiTests.iteration2.User can transfer money 1 - 10 000 rouble
+Thread ForkJoinPool-1-worker-18 Test duration apiTests.iteration2.User can transfer money 1 - 10 000 rouble, test duration 678 ms
+Thread ForkJoinPool-1-worker-6: Test started uiTests.iteration2.User can not deposit money <= 0 5000 rouble
+Thread ForkJoinPool-1-worker-6: Test finished uiTests.iteration2.User can not deposit money <= 0 5000 rouble
+Thread ForkJoinPool-1-worker-6 Test duration uiTests.iteration2.User can not deposit money <= 0 5000 rouble, test duration 923 ms
+Thread ForkJoinPool-1-worker-3: Test started uiTests.iteration2.User can not deposit money > 5000 rouble
+Thread ForkJoinPool-1-worker-4: Test started uiTests.iteration2.User can NOT change name John John John
+Thread ForkJoinPool-1-worker-2: Test started uiTests.iteration2.User can transfer money 1 - 10 000 rouble
+Thread ForkJoinPool-1-worker-5: Test finished uiTests.iteration1.adminCanLoginWithCorrectDataTest()
+Thread ForkJoinPool-1-worker-5 Test duration uiTests.iteration1.adminCanLoginWithCorrectDataTest(), test duration 12737 ms
+Thread ForkJoinPool-1-worker-3: Test finished uiTests.iteration2.User can not deposit money > 5000 rouble
+Thread ForkJoinPool-1-worker-3 Test duration uiTests.iteration2.User can not deposit money > 5000 rouble, test duration 1234 ms
+Thread ForkJoinPool-1-worker-4: Test finished uiTests.iteration2.User can NOT change name John John John
+Thread ForkJoinPool-1-worker-4 Test duration uiTests.iteration2.User can NOT change name John John John, test duration 1291 ms
+Thread ForkJoinPool-1-worker-2: Test finished uiTests.iteration2.User can transfer money 1 - 10 000 rouble
+Thread ForkJoinPool-1-worker-2 Test duration uiTests.iteration2.User can transfer money 1 - 10 000 rouble, test duration 1647 ms
+Thread ForkJoinPool-1-worker-2: Test started uiTests.iteration2.User can transfer money 1 - 10 000 rouble
+Thread ForkJoinPool-1-worker-2: Test finished uiTests.iteration2.User can transfer money 1 - 10 000 rouble
+Thread ForkJoinPool-1-worker-2 Test duration uiTests.iteration2.User can transfer money 1 - 10 000 rouble, test duration 1189 ms
+Thread ForkJoinPool-1-worker-7: Test started uiTests.iteration2.User can NOT transfer money > 10 000
+Thread ForkJoinPool-1-worker-7: Test finished uiTests.iteration2.User can NOT transfer money > 10 000
+Thread ForkJoinPool-1-worker-7 Test duration uiTests.iteration2.User can NOT transfer money > 10 000, test duration 2443 ms
+Thread ForkJoinPool-1-worker-9: Test started uiTests.iteration2.User can NOT transfer money <=0
+Thread ForkJoinPool-1-worker-8: Test finished uiTests.iteration1.userCanLoginWithCorrectData()
+Thread ForkJoinPool-1-worker-8 Test duration uiTests.iteration1.userCanLoginWithCorrectData(), test duration 79447 ms
+Thread ForkJoinPool-1-worker-12: Test started uiTests.iteration1.adminCannotCreateUserWithInvalidDataTest()
+Thread ForkJoinPool-1-worker-9: Test finished uiTests.iteration2.User can NOT transfer money <=0
+Thread ForkJoinPool-1-worker-9 Test duration uiTests.iteration2.User can NOT transfer money <=0, test duration 1665 ms
+Thread ForkJoinPool-1-worker-10: Test started uiTests.iteration2.User can not deposit money <= 0 5000 rouble
+Thread ForkJoinPool-1-worker-10: Test finished uiTests.iteration2.User can not deposit money <= 0 5000 rouble
+Thread ForkJoinPool-1-worker-10 Test duration uiTests.iteration2.User can not deposit money <= 0 5000 rouble, test duration 819 ms
+Thread ForkJoinPool-1-worker-12: Test finished uiTests.iteration1.adminCannotCreateUserWithInvalidDataTest()
+Thread ForkJoinPool-1-worker-12 Test duration uiTests.iteration1.adminCannotCreateUserWithInvalidDataTest(), test duration 54035 ms
+
+
+
+# Таблица времени тестов на воркер (58 тестов на 16 воркеров) при parallelism = 3
+
+| Воркер                   | Тест 1                                                         | Время 1 (мс) | Тест 2                                                       | Время 2 (мс) | Тест 3                                          | Время 3 (мс) | Тест 4                                 | Время 4 (мс) | Тест 5                                    | Время 5 (мс) | Суммарное время (мс) |
+| ------------------------ | -------------------------------------------------------------- | -----------: | ------------------------------------------------------------ | -----------: | ----------------------------------------------- | -----------: | -------------------------------------- | -----------: | ----------------------------------------- | -----------: | -------------------: |
+| ForkJoinPool-1-worker-1  | [1] Username cannot be blank                                   |          905 | [2] ab                                                       |           88 | [3] abc$                                        |          118 | [4] abc%                               |          152 | adminCanCreateUserWithCorrectDataTest     |         1056 |                 2319 |
+| ForkJoinPool-1-worker-1  | userCanCreateAccountTest                                       |          517 | adminCanGenerateAuthTokenTest                                |          101 | userCanGenerateAuthTokenTest                    |          293 | User can NOT change name               |          510 | User can NOT change name                  |          593 |                 2014 |
+| ForkJoinPool-1-worker-1  | User can NOT change name                                       |          443 | User can NOT change name                                     |          528 | User can NOT change name                        |          734 | User can NOT change name               |          790 | User can change name                      |          559 |                 3054 |
+| ForkJoinPool-1-worker-18 | User can not deposit money into ANOTHER ACCOUNT                |          616 | User can deposit money 1 - 5000 rouble                       |          721 | User can deposit money 1 - 5000 rouble          |          623 | User can deposit money 1 - 5000 rouble |          491 | User can transfer money 1 - 10 000 rouble |         1173 |                 3624 |
+| ForkJoinPool-1-worker-18 | User can transfer money 1 - 10 000 rouble                      |         1385 | User can transfer money 1 - 10 000 rouble                    |          940 | User can transfer money 1 - 10 000 rouble       |          678 |                                        |              |                                           |              |                 3003 |
+| ForkJoinPool-1-worker-19 | User can not deposit money < 0 or > 5000 rouble                |          581 | User can not deposit money < 0 or > 5000 rouble              |          709 | User can not deposit money < 0 or > 5000 rouble |          645 | User can deposit money 1 - 5000 rouble |          595 |                                           |              |                 2530 |
+| ForkJoinPool-1-worker-21 | User can NOT transfer money                                    |         1388 | User can NOT transfer money                                  |           13 |                                                 |              |                                        |              |                                           |              |                 1401 |
+| ForkJoinPool-1-worker-22 | User can NOT transfer money                                    |          548 |                                                              |              |                                                 |              |                                        |              |                                           |              |                  548 |
+| ForkJoinPool-1-worker-24 | User can NOT transfer money                                    |          764 |                                                              |              |                                                 |              |                                        |              |                                           |              |                  764 |
+| ForkJoinPool-1-worker-6  | uiTests.iteration2.User can not deposit money <= 0 5000 rouble |          923 |                                                              |              |                                                 |              |                                        |              |                                           |              |                  923 |
+| ForkJoinPool-1-worker-3  | uiTests.iteration2.User can not deposit money > 5000 rouble    |         1234 |                                                              |              |                                                 |              |                                        |              |                                           |              |                 1234 |
+| ForkJoinPool-1-worker-4  | uiTests.iteration2.User can NOT change name John John John     |         1291 |                                                              |              |                                                 |              |                                        |              |                                           |              |                 1291 |
+| ForkJoinPool-1-worker-2  | uiTests.iteration2.User can transfer money 1 - 10 000 rouble   |         1647 | uiTests.iteration2.User can transfer money 1 - 10 000 rouble |         1189 |                                                 |              |                                        |              |                                           |              |                 2836 |
+| ForkJoinPool-1-worker-5  | uiTests.iteration1.adminCanLoginWithCorrectDataTest            |        12737 |                                                              |              |                                                 |              |                                        |              |                                           |              |                12737 |
+| ForkJoinPool-1-worker-7  | uiTests.iteration2.User can NOT transfer money > 10 000        |         2443 |                                                              |              |                                                 |              |                                        |              |                                           |              |                 2443 |
+| ForkJoinPool-1-worker-9  | uiTests.iteration2.User can NOT transfer money <=0             |         1665 |                                                              |              |                                                 |              |                                        |              |                                           |              |                 1665 |
+| ForkJoinPool-1-worker-8  | uiTests.iteration1.userCanLoginWithCorrectData                 |        79447 |                                                              |              |                                                 |              |                                        |              |                                           |              |                79447 |
+| ForkJoinPool-1-worker-10 | uiTests.iteration2.User can not deposit money <= 0 5000 rouble |          819 |                                                              |              |                                                 |              |                                        |              |                                           |              |                  819 |
+| ForkJoinPool-1-worker-12 | uiTests.iteration1.adminCannotCreateUserWithInvalidDataTest    |        54035 |                                                              |              |                                                 |              |                                        |              |                                           |              |                54035 |
+
+АНАЛИЗ:
+Пока worker-8 выполняет тест 79 секунд, остальные воркеры уже простаивают.
+longest tests:
+worker-8 - 79 sec
+worker-12 - 54 sec
+worker-5 - 12 sec
+Если сделать: parallelism=6 то:
+- длинные UI тесты смогут идти одновременно,
+- короткие API тесты не будут ждать,
+- CPU будет загружен лучше.
+
+ОДНАКО ЕСЛИ UI тесты используют: Selenium, WebDriver, Docker, Testcontainers, браузеры,
+ТО bottleneck может быть: CPU, RAM, Chrome instances, DB locks, network IO
+И после некоторого значения parallelism: тесты начинают тормозить друг друга
+
+Время мавен Total time:  02:17 min (137 000 ms)
+Lifecycle Phase summary:
+[INFO]
+[INFO]       31 ms : clean
+[INFO]       41 ms : process-resources
+[INFO]      990 ms : compile
+[INFO]        3 ms : process-test-resources
+[INFO]      236 ms : test-compile
+[INFO]   135 971 ms : test
+
+ИТОГ:
+API тесты: 100–1500 ms
+UI тесты: 1–80 sec
+То есть: смешивание UI и API тестов в одном пуле — неэффективно
