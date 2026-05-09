@@ -22,7 +22,7 @@ public class CreateUserUITest extends BaseUiTest {
 
     @Test
     @AdminSession
-    @Browsers({"chrome"})
+    @Browsers({"firefox"})
     public void adminCanCreateUserTest(){
         // ШАГ 1: админ логинится в банке
         // ШАГ 2: админ создает юзера в банке на своей панели +
