@@ -22,7 +22,7 @@ public class DepositMoney extends BasePage<DepositMoney>{
     }
 
     public DepositMoney depositMoneyToAccount(long accountId, String depositAmount){
-        selectAccount.selectOption("ACC" + accountId + " (Balance: $0.00)");
+        selectAccount.selectOptionByValue(String.valueOf(accountId));
         enterAmountField.sendKeys(depositAmount);
         depositButton.shouldHave(exactText("💵 Deposit")).click();
         return this;

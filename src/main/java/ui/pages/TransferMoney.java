@@ -22,10 +22,10 @@ public class TransferMoney extends BasePage<TransferMoney>{
         return "/transfer";
     }
 
-    public TransferMoney transferMoneyFromAccountToAccount(long yourAccount, long receipentAccountNumber, String transferAmountMoney){
+    public TransferMoney transferMoneyFromAccountToAccount(long yourAccount, String receipentAccountNumber, String transferAmountMoney){
         selectYourAccount.selectOptionByValue(String.valueOf(yourAccount));
         enterReceipentNameField.sendKeys("To me");
-        enterReceipentAccountNumberField.sendKeys("ACC" + receipentAccountNumber);
+        enterReceipentAccountNumberField.sendKeys(receipentAccountNumber);
         enterAmountMoneyField.sendKeys(transferAmountMoney);
         confirmDetailsCheckbox.click();
         sendTransferButton.shouldHave(exactText("🚀 Send Transfer")).click();

@@ -46,9 +46,9 @@ public class DepositMoneyTest extends BaseTest {
     //Negative 1:
     public static Stream<Arguments> moneyInvalidDepositData() {
         return Stream.of(
-                Arguments.of(-1, "Deposit amount must be at least 0.01"),
-                Arguments.of(0, "Deposit amount must be at least 0.01"),
-                Arguments.of(5001, "Deposit amount cannot exceed 5000")
+                Arguments.of(-1, "Invalid account or amount"),
+                Arguments.of(0, "Invalid account or amount"),
+                Arguments.of(5001, "Deposit amount exceeds the 5000 limit")
         );
     }
 

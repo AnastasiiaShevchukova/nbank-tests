@@ -13,7 +13,6 @@ import ui.pages.AdminPanel;
 import ui.pages.BankAlerts;
 import uiTests.BaseUiTest;
 
-import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -22,7 +21,7 @@ public class CreateUserUITest extends BaseUiTest {
 
     @Test
     @AdminSession
-    @Browsers({"firefox"})
+    @Browsers({"chrome"})
     public void adminCanCreateUserTest(){
         // ШАГ 1: админ логинится в банке
         // ШАГ 2: админ создает юзера в банке на своей панели +
