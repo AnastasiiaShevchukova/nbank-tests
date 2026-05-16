@@ -1,10 +1,13 @@
 package apiTests.iteration2;
 
+import api.requests.steps.DataBaseSteps;
 import apiTests.BaseTest;
 import api.models.CreateUserRequest;
 import api.models.DepositMoneyRequest;
 import api.models.DepositMoneyResponse;
 import api.models.comparison.ModelAssertions;
+import common.annotations.APIBackend;
+import common.annotations.APIVersion;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -20,6 +23,9 @@ import api.specs.ResponseSpecs;
 
 import java.util.stream.Stream;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+@APIVersion(APIBackend.DATABASE_FIX)
 public class DepositMoneyTest extends BaseTest {
 
     //Positive 1:
@@ -38,17 +44,24 @@ public class DepositMoneyTest extends BaseTest {
 
         ModelAssertions.assertThatModels(depositRequest, depositResponse).match();
 
-        // Проверка, что баланс изменился
+        // Проверка через АПИ, что баланс изменился
         UserSteps.checkAccountBalance(depositAmount, createUserRequest, createdAccountId);
+
+        // Проверка через БД
+        Double expectedBalance = Double.valueOf(depositAmount);
+        Double actualBalance = DataBaseSteps.getAccountBalanceByAccountNumber(depositResponse.getAccountNumber()).getBalance();
+
+        assertEquals(expectedBalance, actualBalance, 0.01, "Баланс в базе данных не соответствует балансу из POST запроса на депозит");
+
     }
 
 
     //Negative 1:
     public static Stream<Arguments> moneyInvalidDepositData() {
         return Stream.of(
-                Arguments.of(-1, "Deposit amount must be at least 0.01"),
-                Arguments.of(0, "Deposit amount must be at least 0.01"),
-                Arguments.of(5001, "Deposit amount cannot exceed 5000")
+                Arguments.of(-1, "Invalid account or amount"),
+                Arguments.of(0, "Invalid account or amount"),
+                Arguments.of(5001, "Deposit amount exceeds the 5000 limit")
         );
     }
 
@@ -70,8 +83,12 @@ public class DepositMoneyTest extends BaseTest {
                 ResponseSpecs.requestReturnsBadRequestWithoutErrorKey(errorMsg))
                 .post(depositRequest);
 
-        // Проверка, что баланс не изменился
+        // Проверка через АПИ, что баланс не изменился
         UserSteps.checkAccountBalance(0, createUserRequest, createdAccountId);
+
+        // Проверка через БД
+        Double actualBalance = DataBaseSteps.getAccountBalanceByAccountId(createdAccountId).getBalance();
+        assertEquals(0.0, actualBalance, 0.01, "Баланс в базе данных должен быть равен 0");
     }
 
     //Negative 2
@@ -93,8 +110,12 @@ public class DepositMoneyTest extends BaseTest {
                 ResponseSpecs.requestReturnsForbidden("Unauthorized access to account"))
                 .post(depositRequest);
 
-        // Проверка, что баланс не изменился
+        // Проверка через АПИ, что баланс не изменился
         UserSteps.checkAccountBalance(0, createUserRequest, createdAccountId);
+
+        // Проверка через БД
+        Double actualBalance = DataBaseSteps.getAccountBalanceByAccountId(createdAccountId).getBalance();
+        assertEquals(0.0, actualBalance, 0.01, "Баланс в базе данных должен быть равен 0");
 
     }
 }

@@ -1,0 +1,86 @@
+services:
+  backend:
+    image: nobugsme/nbank:with_database_with_fix
+    ports:
+      - "4111:4111"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/nbank
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.postgresql.Driver
+    depends_on:
+      - postgres
+    networks:
+      - nbank-network
+
+#  backend-with-database:
+#    image: nobugsme/nbank:with_validation_fix
+#    ports:
+#      - "8000:4111"
+#    environment:
+#      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/nbank
+#      - SPRING_DATASOURCE_USERNAME=postgres
+#      - SPRING_DATASOURCE_PASSWORD=postgres
+#      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.postgresql.Driver
+#    depends_on:
+#      - postgres
+#    networks:
+#      - nbank-network
+
+  postgres:
+    image: postgres:15-alpine
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_DB=nbank
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d:ro
+    networks:
+      - nbank-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d nbank"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  selenoid:
+    image: aerokube/selenoid:latest
+    container_name: selenoid
+    ports:
+      - "4444:4444"
+    environment:
+      - DOCKER_API_VERSION=1.44
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /Users/anastasiashevchukova/Documents/projects/selenoid/config:/etc/selenoid/
+      - /Users/anastasiashevchukova/Documents/projects/selenoid/video:/opt/selenoid/video/
+    command:
+      - "-conf"
+      - "/etc/selenoid/browsers.json"
+      - "-container-network"
+      - "nbank-network"
+    networks:
+      - nbank-network
+
+  selenoid-ui:
+    image: aerokube/selenoid-ui
+    ports:
+      - "8080:8080"
+    command:
+      - "--selenoid-uri"
+      - "http://selenoid:4444"
+    depends_on:
+      - selenoid
+    networks:
+      - nbank-network
+
+networks:
+  nbank-network:
+    name: nbank-network
+
+volumes:
+  postgres_data:
+    driver: local

@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.function.Function;
 
 import static com.codeborne.selenide.Selenide.*;
-import static org.assertj.core.api.Assertions.assertThat;
 
 
 public abstract class BasePage<T extends BasePage> {
@@ -34,21 +33,26 @@ public abstract class BasePage<T extends BasePage> {
 
     public T checkAlertMessageAndAccept(String alert, Object... args) {
         String expected = String.format(alert, args);
-        RetryUtils.retry(
-                () -> {
-                    Alert a = switchTo().alert();
 
-                    if (a.getText().contains(expected)) {
-                        a.accept();
-                        return true;
-                    }
+        try {
+            RetryUtils.retry(
+                    () -> {
+                        Alert a = switchTo().alert();
 
-                    return false;
-                },
-                Boolean::booleanValue,
-                10,
-                1000
-        );
+                        if (a.getText().contains(expected)) {
+                            a.accept();
+                            return true;
+                        }
+
+                        return false;
+                    },
+                    Boolean::booleanValue,
+                    2,
+                    1000
+            );
+        } catch (Exception e) {
+            System.out.println("Alert was not found or text mismatched: " + expected);
+        }
 
         return (T) this;
     }

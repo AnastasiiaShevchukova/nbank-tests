@@ -1,6 +1,9 @@
 package uiTests.iteration2;
 
 import api.models.CreateUserRequest;
+import api.requests.steps.DataBaseSteps;
+import common.annotations.APIBackend;
+import common.annotations.APIVersion;
 import common.annotations.Browsers;
 import common.annotations.UserSession;
 import common.storage.SessionStorage;
@@ -11,6 +14,9 @@ import ui.pages.BankAlerts;
 import ui.pages.DepositMoney;
 import uiTests.BaseUiTest;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+@APIVersion(APIBackend.DATABASE_FIX)
 public class DepositMoneyUITest extends BaseUiTest {
 
     //Позитив
@@ -34,8 +40,12 @@ public class DepositMoneyUITest extends BaseUiTest {
                 .checkAlertMessageAndAccept(BankAlerts.SUCCESSFULLY_DEPOSITED_MONEY_TO_ACCOUNT.getMessage(), depositAmount, createdAccountId);
 
         // Проверка API, что депозит успешен (баланс аккаунта изменился)
-        double depositAmountDouble = Double.parseDouble(depositAmount);
-        UserSteps.checkAccountBalance(depositAmountDouble, user, createdAccountId);
+        Double expectedBalance = Double.valueOf(depositAmount);
+        UserSteps.checkAccountBalance(expectedBalance, user, createdAccountId);
+
+        // Проверка через БД
+        Double actualBalance = DataBaseSteps.getAccountBalanceByAccountId(createdAccountId).getBalance();
+        assertEquals(expectedBalance, actualBalance, 0.01, "Баланс в базе данных не соответствует балансу из POST запроса на депозит");
     }
 
     //Negative 1:
@@ -61,6 +71,10 @@ public class DepositMoneyUITest extends BaseUiTest {
 
         // Проверка API, что депозит НЕ успешен (баланс аккаунта равен 0)
         UserSteps.checkAccountBalance(0, user, createdAccountId);
+
+        // Проверка через БД
+        Double actualBalance = DataBaseSteps.getAccountBalanceByAccountId(createdAccountId).getBalance();
+        assertEquals(0.0, actualBalance, 0.01, "Баланс в базе данных должен быть равен 0");
     }
 
     //Negative 2:
@@ -86,5 +100,9 @@ public class DepositMoneyUITest extends BaseUiTest {
 
         // Проверка API, что депозит НЕ успешен (баланс аккаунта равен 0)
         UserSteps.checkAccountBalance(0, user, createdAccountId);
+
+        // Проверка через БД
+        Double actualBalance = DataBaseSteps.getAccountBalanceByAccountId(createdAccountId).getBalance();
+        assertEquals(0.0, actualBalance, 0.01, "Баланс в базе данных должен быть равен 0");
     }
 }

@@ -1,7 +1,10 @@
 package uiTests.iteration2;
 
+import api.requests.steps.DataBaseSteps;
 import com.codeborne.selenide.Selenide;
 import api.models.CreateUserRequest;
+import common.annotations.APIBackend;
+import common.annotations.APIVersion;
 import common.annotations.Browsers;
 import common.annotations.UserSession;
 import common.storage.SessionStorage;
@@ -17,7 +20,9 @@ import uiTests.BaseUiTest;
 
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@APIVersion(APIBackend.DATABASE_FIX)
 public class ChangeNameUITest extends BaseUiTest {
 
 
@@ -25,7 +30,7 @@ public class ChangeNameUITest extends BaseUiTest {
     @Test
     @DisplayName("User can change name")
     @UserSession()
-    @Browsers({"chrome"})
+    @Browsers({"firefox"})
     public void userCanChangeNameTest() {
         // Предусловие ШАГ 1: админ логинится в банке
         // Предусловие Шаг 2: админ создает юзера
@@ -44,6 +49,11 @@ public class ChangeNameUITest extends BaseUiTest {
 
         // Проверка API, что имя поменялось
         UserSteps.checkName(user, "John Smith", "Ожидалось, что имя пользователя изменится на новое значение");
+
+        // Проверка через БД, что имя поменялось
+        String expectedName = "John Smith";
+        String actualName = DataBaseSteps.getUserByUsername(user.getUsername()).getName();
+        assertEquals(expectedName, actualName, "Ожидалось, что имя юзера в БД изменится");
     }
 
     //Negative 1:
@@ -69,6 +79,10 @@ public class ChangeNameUITest extends BaseUiTest {
 
         // Проверка API, что имя юзера не поменялось
         UserSteps.checkName(user, null, "Ожидалось, что имя юзера не поменяется");
+
+        // Проверка через БД, что имя не поменялось
+        String actualName = DataBaseSteps.getUserByUsername(user.getUsername()).getName();
+        assertEquals(null, actualName, "Ожидалось, что имя юзера в БД не изменится");
     }
 
     //Negative 2:
@@ -94,5 +108,9 @@ public class ChangeNameUITest extends BaseUiTest {
 
         // Проверка API, что имя юзера не поменялось
         UserSteps.checkName(user, null, "Ожидалось, что имя юзера не поменяется");
+
+        // Проверка через БД, что имя не поменялось
+        String actualName = DataBaseSteps.getUserByUsername(user.getUsername()).getName();
+        assertEquals(null, actualName, "Ожидалось, что имя юзера в БД не изменится");
     }
 }

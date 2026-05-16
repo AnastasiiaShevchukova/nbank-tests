@@ -1,9 +1,12 @@
 package apiTests.iteration2;
 
+import api.requests.steps.DataBaseSteps;
 import apiTests.BaseTest;
 import api.models.ChangeNameRequest;
 import api.models.ChangeNameResponse;
 import api.models.CreateUserRequest;
+import common.annotations.APIBackend;
+import common.annotations.APIVersion;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -18,6 +21,9 @@ import api.specs.ResponseSpecs;
 
 import java.util.stream.Stream;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+@APIVersion(APIBackend.DATABASE_FIX)
 public class ChangeNameTest extends BaseTest {
 
     // Positive 1:
@@ -31,6 +37,12 @@ public class ChangeNameTest extends BaseTest {
         softly.assertThat(changeNameResponse.getMessage()).isEqualTo("Profile updated successfully");
         softly.assertThat(changeNameResponse.getCustomer().getUsername()).isEqualTo(userRequest.getUsername());
         softly.assertThat(changeNameResponse.getCustomer().getName()).isEqualTo("John Smith");
+
+        // Проверка через БД, что имя поменялось
+        String expectedName = changeNameResponse.getCustomer().getName();
+        String actualName = DataBaseSteps.getUserByUsername(userRequest.getUsername()).getName();
+        assertEquals(expectedName, actualName, "Ожидалось, что имя юзера в БД изменится");
+
     }
 
 
@@ -61,7 +73,11 @@ public class ChangeNameTest extends BaseTest {
                 ResponseSpecs.requestReturnsBadRequestWithoutErrorKey(errorMsg))
                 .update(changeNameRequest);
 
-        // проверка, что имя не поменялось
-        UserSteps.checkName(userRequest, null, "Имя изменилось, хотя не должно было");
+        // проверка через АПИ, что имя не поменялось
+        UserSteps.checkName(userRequest, null, "Ожидалось, что имя юзера не изменится");
+
+        // Проверка через БД, что имя не поменялось
+        String actualName = DataBaseSteps.getUserByUsername(userRequest.getUsername()).getName();
+        assertEquals(null, actualName, "Ожидалось, что имя юзера в БД не изменится");
     }
 }

@@ -4,6 +4,8 @@ import apiTests.BaseTest;
 import api.models.CreateUserRequest;
 import api.models.CreateUserResponse;
 import api.models.LoginUserRequest;
+import common.annotations.APIBackend;
+import common.annotations.APIVersion;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import api.requests.skelethon.Endpoint;
@@ -13,6 +15,7 @@ import api.requests.steps.AdminSteps;
 import api.specs.RequestSpecs;
 import api.specs.ResponseSpecs;
 
+@APIVersion(APIBackend.DATABASE_FIX)
 public class LoginUserTest extends BaseTest {
 
     @Test

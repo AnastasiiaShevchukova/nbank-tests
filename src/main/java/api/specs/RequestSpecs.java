@@ -15,9 +15,20 @@ import java.util.List;
 import java.util.Map;
 
 public class RequestSpecs {
+
+    private static final ThreadLocal<String> currentBaseUrl = new ThreadLocal<>();
+
     private static Map<String, String> authHeaders = new HashMap<>(Map.of("admin", "Basic YWRtaW46YWRtaW4="));
 
     private RequestSpecs() {
+    }
+
+    public static void setBaseUrl(String baseUrl) {
+        currentBaseUrl.set(baseUrl);
+    }
+
+    public static void clearBaseUrl() {
+        currentBaseUrl.remove();
     }
 
     //Дефолтная спека
@@ -27,7 +38,8 @@ public class RequestSpecs {
                 .setAccept(ContentType.JSON)
                 .addFilters(List.of(new RequestLoggingFilter(),
                         new ResponseLoggingFilter()))
-                .setBaseUri(Config.getProperty("apiBaseUrl") + Config.getProperty("apiVersion"));
+                .setBaseUri((currentBaseUrl.get() != null ? currentBaseUrl.get() : Config.getProperty("apiBaseUrl"))
+                        + Config.getProperty("apiVersion"));
     }
 
     //Не авторизованный юзер

@@ -1,34 +1,37 @@
 package apiTests.iteration1;
 
+import api.dao.AccountDao;
+import api.dao.comparison.DaoAndModelAssertions;
+import api.models.CreateAccountResponse;
+import api.requests.skelethon.Endpoint;
+import api.requests.skelethon.requesters.ValidatedCrudRequester;
+import api.requests.steps.DataBaseSteps;
+import api.specs.ResponseSpecs;
+import api.specs.RequestSpecs;
 import apiTests.BaseTest;
 import api.models.CreateUserRequest;
-import api.models.GetAllCustomerAccountsResponse;
+import common.annotations.APIBackend;
+import common.annotations.APIVersion;
 import org.junit.jupiter.api.Test;
 import api.requests.steps.AdminSteps;
-import api.requests.steps.UserSteps;
 
-import java.util.List;
-
+@APIVersion(APIBackend.DATABASE_FIX)
 public class CreateAccountTest extends BaseTest {
 
     //Positive
     @Test
     public void userCanCreateAccountTest() {
-        CreateUserRequest createUserRequest = AdminSteps.createUser();
+        CreateUserRequest userRequest = AdminSteps.createUser();
 
-        long createdAccountId = UserSteps.createAccount(createUserRequest).getId();
+        CreateAccountResponse createAccountResponse = new ValidatedCrudRequester<CreateAccountResponse>
+                (RequestSpecs.authAsUserSpec(userRequest.getUsername(), userRequest.getPassword()),
+                        Endpoint.ACCOUNTS,
+                        ResponseSpecs.entityWasCreated())
+                .post(null);
 
-        // запросить все аккаунты юзера и проверить, что созданный аккаунт там (по id)
-        List<GetAllCustomerAccountsResponse> allAccounts = UserSteps.
-                getAllCustomerAccounts(createUserRequest.getUsername(), createUserRequest.getPassword());
-
-        // Находим созданный аккаунт в списке
-        GetAllCustomerAccountsResponse createdAccountInList = allAccounts.stream()
-                .filter(account -> account.getId() == createdAccountId)
-                .findFirst()
-                .orElse(null);
-
-        softly.assertThat(createdAccountInList).isNotNull();
+        // Проверка через БД
+        AccountDao accountDao = DataBaseSteps.getAccountByAccountNumber(createAccountResponse.getAccountNumber());
+        DaoAndModelAssertions.assertThat(createAccountResponse, accountDao).match();
     }
 
 

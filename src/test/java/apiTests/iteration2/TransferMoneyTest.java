@@ -1,11 +1,14 @@
 package apiTests.iteration2;
 
+import api.requests.steps.DataBaseSteps;
 import apiTests.BaseTest;
 import api.models.CreateUserRequest;
 import api.models.DepositMoneyRequest;
 import api.models.TransferMoneyRequest;
 import api.models.TransferMoneyResponse;
 import api.models.comparison.ModelAssertions;
+import common.annotations.APIBackend;
+import common.annotations.APIVersion;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -18,6 +21,9 @@ import api.specs.ResponseSpecs;
 
 import java.util.stream.Stream;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+@APIVersion(APIBackend.DATABASE_FIX)
 public class TransferMoneyTest extends BaseTest {
 
 
@@ -56,20 +62,24 @@ public class TransferMoneyTest extends BaseTest {
                 .receiverAccountId(secondCreatedAccountId)
                 .amount(transferAmount)
                 .build();
-        TransferMoneyResponse transferResponse = UserSteps.
-                transferMoney(transferMoneyRequest, createUser);
+        TransferMoneyResponse transferResponse = UserSteps.transferMoney(transferMoneyRequest, createUser);
         ModelAssertions.assertThatModels(transferMoneyRequest, transferResponse).match();
 
-        // проверка, что баланс поменялся после трансфера
-        UserSteps.checkAccountBalance(depositAmount * depositCount - transferAmount, createUser, firstCreatedAccountId);
+        // проверка через АПИ, что баланс поменялся после трансфера
+        Double expectedBalance = Double.valueOf(depositAmount * depositCount - transferAmount);
+        UserSteps.checkAccountBalance(expectedBalance, createUser, firstCreatedAccountId);
+
+        // Проверка через БД
+        Double actualBalance = DataBaseSteps.getAccountBalanceByAccountId(firstCreatedAccountId).getBalance();
+        assertEquals(expectedBalance, actualBalance, 0.01, "Ожидалось, что баланс в БД отправляющего аккаунта уменьшится на сумму трансфера");
     }
 
 
     //Negative 1:
     public static Stream<Arguments> moneyInvalidTransferData() {
         return Stream.of(
-                Arguments.of(5000, -10, 1, "Transfer amount must be at least 0.01"),
-                Arguments.of(5000, 0, 1, "Transfer amount must be at least 0.01"),
+                Arguments.of(5000, -10, 1, "Invalid transfer: insufficient funds or invalid accounts"),
+                Arguments.of(5000, 0, 1, "Invalid transfer: insufficient funds or invalid accounts"),
                 Arguments.of(5000, 10001, 2, "Transfer amount cannot exceed 10000"),
                 Arguments.of(5000, 5001, 1, "Invalid transfer: insufficient funds or invalid accounts")
         );
@@ -106,7 +116,13 @@ public class TransferMoneyTest extends BaseTest {
                 ResponseSpecs.requestReturnsBadRequestWithoutErrorKey(errorMsg))
                 .post(transferMoneyRequest);
 
-        // проверка, что баланс не поменялся после трансфера
-        UserSteps.checkAccountBalance(depositAmount * depositCount, createUser, firstCreatedAccountId);
+        // проверка через АПИ, что баланс не поменялся после трансфера
+        Double expectedBalance = Double.valueOf(depositAmount * depositCount);
+        UserSteps.checkAccountBalance(expectedBalance, createUser, firstCreatedAccountId);
+
+        // Проверка через БД
+        Double actualBalance = DataBaseSteps.getAccountBalanceByAccountId(firstCreatedAccountId).getBalance();
+        assertEquals(expectedBalance, actualBalance, 0.01, "Ожидалось, что баланс в БД отправляющего аккаунта не изменится");
     }
+
 }
