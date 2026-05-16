@@ -89,6 +89,26 @@ public class DataBaseSteps {
         });
     }
 
+    public static AccountDao getAccountBalanceByAccountNumber(String accountNumber) {
+        return StepLogger.log("Get account balance from database by account number: " + accountNumber, () -> {
+            return DBRequest.builder()
+                    .requestType(DBRequest.RequestType.SELECT)
+                    .table(Table.ACCOUNTS.getName())
+                    .where(Condition.equalTo("account_number", accountNumber))
+                    .extractAs(AccountDao.class);
+        });
+    }
+
+    public static AccountDao getAccountBalanceByAccountId(long accountId) {
+        return StepLogger.log("Get account balance from database by account id: " + accountId, () -> {
+            return DBRequest.builder()
+                    .requestType(DBRequest.RequestType.SELECT)
+                    .table(Table.ACCOUNTS.getName())
+                    .where(Condition.equalTo("id", accountId))
+                    .extractAs(AccountDao.class);
+        });
+    }
+
     public static void updateAccountBalance(Long accountId, Double newBalance) {
         StepLogger.log("Update account balance in database for account ID: " + accountId + " to: " + newBalance, () -> {
             try (Connection connection = DriverManager.getConnection(

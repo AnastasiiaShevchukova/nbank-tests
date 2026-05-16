@@ -3,6 +3,7 @@ package uiTests.iteration2;
 import api.models.CreateAccountResponse;
 import api.models.CreateUserRequest;
 import api.models.DepositMoneyRequest;
+import api.requests.steps.DataBaseSteps;
 import common.annotations.APIBackend;
 import common.annotations.APIVersion;
 import common.annotations.Browsers;
@@ -17,6 +18,8 @@ import ui.pages.TransferMoney;
 import uiTests.BaseUiTest;
 
 import java.util.stream.Stream;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @APIVersion(APIBackend.DATABASE_FIX)
 public class TransferMoneyUITest extends BaseUiTest {
@@ -70,7 +73,12 @@ public class TransferMoneyUITest extends BaseUiTest {
                 .checkAlertMessageAndAccept(BankAlerts.SUCCESSFULLY_TRANSFERRED_MONEY_TO_ACCOUNT.getMessage(), transferAmount, secondAccount.getAccountNumber());
 
         // Проверка API, что трансфер успешен (баланс аккаунта изменился)
-        UserSteps.checkAccountBalance(depositAmount * depositCount - transferAmount, user, firstCreatedAccountId);
+        Double expectedBalance = Double.valueOf(depositAmount * depositCount - transferAmount);
+        UserSteps.checkAccountBalance(expectedBalance, user, firstCreatedAccountId);
+
+        // Проверка через БД
+        Double actualBalance = DataBaseSteps.getAccountBalanceByAccountId(firstCreatedAccountId).getBalance();
+        assertEquals(expectedBalance, actualBalance, 0.01, "Ожидалось, что баланс в БД отправляющего аккаунта уменьшится на сумму трансфера");
     }
 
     //Negative 1:
@@ -120,7 +128,12 @@ public class TransferMoneyUITest extends BaseUiTest {
                 .checkAlertMessageAndAccept(BankAlerts.ERROR_TRANSFER_AMOUNT_MUST_BE_AT_LEAST_01.getMessage());
 
         // Проверка API, что трансфер НЕ успешен(баланс аккаунта не изменился)
-        UserSteps.checkAccountBalance(depositAmount * depositCount, user, firstCreatedAccountId);
+        Double expectedBalance = Double.valueOf(depositAmount * depositCount);
+        UserSteps.checkAccountBalance(expectedBalance, user, firstCreatedAccountId);
+
+        // Проверка через БД
+        Double actualBalance = DataBaseSteps.getAccountBalanceByAccountId(firstCreatedAccountId).getBalance();
+        assertEquals(expectedBalance, actualBalance, 0.01, "Ожидалось, что баланс в БД отправляющего аккаунта не изменится");
     }
 
     //Negative 2:
@@ -169,7 +182,12 @@ public class TransferMoneyUITest extends BaseUiTest {
                 .checkAlertMessageAndAccept(BankAlerts.ERROR_TRANSFER_AMOUNT_CANNOT_EXCEED_10000.getMessage());
 
         // Проверка API, что трансфер НЕ успешен(баланс аккаунта не изменился)
-        UserSteps.checkAccountBalance(depositAmount * depositCount, user, firstCreatedAccountId);
+        Double expectedBalance = Double.valueOf(depositAmount * depositCount);
+        UserSteps.checkAccountBalance(expectedBalance, user, firstCreatedAccountId);
+
+        // Проверка через БД
+        Double actualBalance = DataBaseSteps.getAccountBalanceByAccountId(firstCreatedAccountId).getBalance();
+        assertEquals(expectedBalance, actualBalance, 0.01, "Ожидалось, что баланс в БД отправляющего аккаунта не изменится");
     }
 
 
@@ -219,6 +237,11 @@ public class TransferMoneyUITest extends BaseUiTest {
                 .checkAlertMessageAndAccept(BankAlerts.ERROR_INVALID_TRANSFER_INSUFFICIENT_FUNDS_OR_INVALID_ACCOUNTS.getMessage());
 
         // Проверка API, что трансфер НЕ успешен(баланс аккаунта не изменился)
-        UserSteps.checkAccountBalance(depositAmount * depositCount, user, firstCreatedAccountId);
+        Double expectedBalance = Double.valueOf(depositAmount * depositCount);
+        UserSteps.checkAccountBalance(expectedBalance, user, firstCreatedAccountId);
+
+        // Проверка через БД
+        Double actualBalance = DataBaseSteps.getAccountBalanceByAccountId(firstCreatedAccountId).getBalance();
+        assertEquals(expectedBalance, actualBalance, 0.01, "Ожидалось, что баланс в БД отправляющего аккаунта не изменится");
     }
 }

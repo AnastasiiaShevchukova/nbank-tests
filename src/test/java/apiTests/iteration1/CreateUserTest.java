@@ -86,6 +86,7 @@ public class CreateUserTest extends BaseTest {
         new CrudRequester(RequestSpecs.adminSpec(), Endpoint.ADMIN_USER, ResponseSpecs.requestReturnsBadRequest(errorKey, errorValues))
                 .post(createUserRequest);
 
+        // Проверка через БД
         assertNull(DataBaseSteps.getUserByUsername(createUserRequest.getUsername()));
     }
 }

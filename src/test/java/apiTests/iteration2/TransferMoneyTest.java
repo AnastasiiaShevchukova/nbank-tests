@@ -1,5 +1,6 @@
 package apiTests.iteration2;
 
+import api.requests.steps.DataBaseSteps;
 import apiTests.BaseTest;
 import api.models.CreateUserRequest;
 import api.models.DepositMoneyRequest;
@@ -19,6 +20,8 @@ import api.specs.RequestSpecs;
 import api.specs.ResponseSpecs;
 
 import java.util.stream.Stream;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @APIVersion(APIBackend.DATABASE_FIX)
 public class TransferMoneyTest extends BaseTest {
@@ -59,12 +62,16 @@ public class TransferMoneyTest extends BaseTest {
                 .receiverAccountId(secondCreatedAccountId)
                 .amount(transferAmount)
                 .build();
-        TransferMoneyResponse transferResponse = UserSteps.
-                transferMoney(transferMoneyRequest, createUser);
+        TransferMoneyResponse transferResponse = UserSteps.transferMoney(transferMoneyRequest, createUser);
         ModelAssertions.assertThatModels(transferMoneyRequest, transferResponse).match();
 
-        // проверка, что баланс поменялся после трансфера
-        UserSteps.checkAccountBalance(depositAmount * depositCount - transferAmount, createUser, firstCreatedAccountId);
+        // проверка через АПИ, что баланс поменялся после трансфера
+        Double expectedBalance = Double.valueOf(depositAmount * depositCount - transferAmount);
+        UserSteps.checkAccountBalance(expectedBalance, createUser, firstCreatedAccountId);
+
+        // Проверка через БД
+        Double actualBalance = DataBaseSteps.getAccountBalanceByAccountId(firstCreatedAccountId).getBalance();
+        assertEquals(expectedBalance, actualBalance, 0.01, "Ожидалось, что баланс в БД отправляющего аккаунта уменьшится на сумму трансфера");
     }
 
 
@@ -109,7 +116,13 @@ public class TransferMoneyTest extends BaseTest {
                 ResponseSpecs.requestReturnsBadRequestWithoutErrorKey(errorMsg))
                 .post(transferMoneyRequest);
 
-        // проверка, что баланс не поменялся после трансфера
-        UserSteps.checkAccountBalance(depositAmount * depositCount, createUser, firstCreatedAccountId);
+        // проверка через АПИ, что баланс не поменялся после трансфера
+        Double expectedBalance = Double.valueOf(depositAmount * depositCount);
+        UserSteps.checkAccountBalance(expectedBalance, createUser, firstCreatedAccountId);
+
+        // Проверка через БД
+        Double actualBalance = DataBaseSteps.getAccountBalanceByAccountId(firstCreatedAccountId).getBalance();
+        assertEquals(expectedBalance, actualBalance, 0.01, "Ожидалось, что баланс в БД отправляющего аккаунта не изменится");
     }
+
 }

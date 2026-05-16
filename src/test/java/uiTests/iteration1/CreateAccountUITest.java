@@ -1,6 +1,9 @@
 package uiTests.iteration1;
 
+import api.dao.AccountDao;
+import api.dao.comparison.DaoAndModelAssertions;
 import api.models.CreateAccountResponse;
+import api.requests.steps.DataBaseSteps;
 import common.annotations.APIBackend;
 import common.annotations.APIVersion;
 import common.annotations.Browsers;
@@ -38,6 +41,10 @@ public class CreateAccountUITest extends BaseUiTest {
         new UserDashboard().checkAlertMessageAndAccept
                 (BankAlerts.NEW_ACCOUNT_CREATED.getMessage() + createdAccounts.getFirst().getAccountNumber());
         assertThat(createdAccounts.getFirst().getBalance()).isZero();
+
+        // Проверка через БД
+        AccountDao accountDao = DataBaseSteps.getAccountByAccountNumber(createdAccounts.getFirst().getAccountNumber());
+        DaoAndModelAssertions.assertThat(createdAccounts.getFirst(), accountDao).match();
 
     }
 }

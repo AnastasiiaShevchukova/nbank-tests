@@ -1,8 +1,6 @@
 package api.dao.comparison;
 
 import api.models.BaseModel;
-import api.dao.UserDao;
-import api.dao.AccountDao;
 import org.assertj.core.api.AbstractAssert;
 
 public class DaoAndModelAssertions {

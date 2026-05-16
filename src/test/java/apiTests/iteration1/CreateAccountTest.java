@@ -29,9 +29,8 @@ public class CreateAccountTest extends BaseTest {
                         ResponseSpecs.entityWasCreated())
                 .post(null);
 
+        // Проверка через БД
         AccountDao accountDao = DataBaseSteps.getAccountByAccountNumber(createAccountResponse.getAccountNumber());
-
-        System.out.println("ВЫВОД" + createAccountResponse.getAccountNumber());
         DaoAndModelAssertions.assertThat(createAccountResponse, accountDao).match();
     }
 
