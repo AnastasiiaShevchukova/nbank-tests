@@ -1,6 +1,8 @@
 package uiTests.iteration1;
 
 import api.models.CreateAccountResponse;
+import common.annotations.APIBackend;
+import common.annotations.APIVersion;
 import common.annotations.Browsers;
 import common.annotations.UserSession;
 import common.storage.SessionStorage;
@@ -12,6 +14,7 @@ import uiTests.BaseUiTest;
 import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
+@APIVersion(APIBackend.DATABASE_FIX)
 public class CreateAccountUITest extends BaseUiTest {
 
     @Test

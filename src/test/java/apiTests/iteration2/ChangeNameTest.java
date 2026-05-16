@@ -4,6 +4,8 @@ import apiTests.BaseTest;
 import api.models.ChangeNameRequest;
 import api.models.ChangeNameResponse;
 import api.models.CreateUserRequest;
+import common.annotations.APIBackend;
+import common.annotations.APIVersion;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -18,6 +20,7 @@ import api.specs.ResponseSpecs;
 
 import java.util.stream.Stream;
 
+@APIVersion(APIBackend.DATABASE_FIX)
 public class ChangeNameTest extends BaseTest {
 
     // Positive 1:

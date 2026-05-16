@@ -6,6 +6,8 @@ import api.models.DepositMoneyRequest;
 import api.models.TransferMoneyRequest;
 import api.models.TransferMoneyResponse;
 import api.models.comparison.ModelAssertions;
+import common.annotations.APIBackend;
+import common.annotations.APIVersion;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -18,6 +20,7 @@ import api.specs.ResponseSpecs;
 
 import java.util.stream.Stream;
 
+@APIVersion(APIBackend.DATABASE_FIX)
 public class TransferMoneyTest extends BaseTest {
 
 

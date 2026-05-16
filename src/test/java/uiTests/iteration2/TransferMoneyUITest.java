@@ -3,6 +3,8 @@ package uiTests.iteration2;
 import api.models.CreateAccountResponse;
 import api.models.CreateUserRequest;
 import api.models.DepositMoneyRequest;
+import common.annotations.APIBackend;
+import common.annotations.APIVersion;
 import common.annotations.Browsers;
 import common.annotations.UserSession;
 import common.storage.SessionStorage;
@@ -16,6 +18,7 @@ import uiTests.BaseUiTest;
 
 import java.util.stream.Stream;
 
+@APIVersion(APIBackend.DATABASE_FIX)
 public class TransferMoneyUITest extends BaseUiTest {
 
     //Позитив

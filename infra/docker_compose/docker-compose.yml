@@ -13,6 +13,20 @@ services:
     networks:
       - nbank-network
 
+#  backend-with-database:
+#    image: nobugsme/nbank:with_validation_fix
+#    ports:
+#      - "8000:4111"
+#    environment:
+#      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/nbank
+#      - SPRING_DATASOURCE_USERNAME=postgres
+#      - SPRING_DATASOURCE_PASSWORD=postgres
+#      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.postgresql.Driver
+#    depends_on:
+#      - postgres
+#    networks:
+#      - nbank-network
+
   postgres:
     image: postgres:15-alpine
     ports:

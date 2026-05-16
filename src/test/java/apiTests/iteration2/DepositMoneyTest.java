@@ -5,6 +5,8 @@ import api.models.CreateUserRequest;
 import api.models.DepositMoneyRequest;
 import api.models.DepositMoneyResponse;
 import api.models.comparison.ModelAssertions;
+import common.annotations.APIBackend;
+import common.annotations.APIVersion;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -20,6 +22,7 @@ import api.specs.ResponseSpecs;
 
 import java.util.stream.Stream;
 
+@APIVersion(APIBackend.DATABASE_FIX)
 public class DepositMoneyTest extends BaseTest {
 
     //Positive 1:
@@ -46,9 +49,9 @@ public class DepositMoneyTest extends BaseTest {
     //Negative 1:
     public static Stream<Arguments> moneyInvalidDepositData() {
         return Stream.of(
-                Arguments.of(-1, "Invalid account or amount"),
-                Arguments.of(0, "Invalid account or amount"),
-                Arguments.of(5001, "Deposit amount exceeds the 5000 limit")
+                Arguments.of(-1, "Deposit amount must be at least 0.01"),
+                Arguments.of(0, "Deposit amount must be at least 0.01"),
+                Arguments.of(5001, "Deposit amount cannot exceed 5000")
         );
     }
 

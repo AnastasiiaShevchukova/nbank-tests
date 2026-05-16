@@ -9,6 +9,8 @@ import api.models.CreateUserRequest;
 import api.models.CreateUserResponse;
 import api.models.GetAllUserResponse;
 import api.models.comparison.ModelAssertions;
+import common.annotations.APIBackend;
+import common.annotations.APIVersion;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -25,6 +27,7 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+@APIVersion(APIBackend.DATABASE_FIX)
 public class CreateUserTest extends BaseTest {
 
 

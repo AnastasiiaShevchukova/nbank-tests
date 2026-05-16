@@ -2,6 +2,8 @@ package uiTests.iteration1;
 
 import com.codeborne.selenide.Condition;
 import api.models.CreateUserRequest;
+import common.annotations.APIBackend;
+import common.annotations.APIVersion;
 import common.annotations.Browsers;
 import org.junit.jupiter.api.Test;
 import api.requests.steps.AdminSteps;
@@ -10,7 +12,7 @@ import ui.pages.LoginPage;
 import ui.pages.UserDashboard;
 import uiTests.BaseUiTest;
 
-
+@APIVersion(APIBackend.DATABASE_FIX)
 public class LoginUserUITest extends BaseUiTest {
 
     @Test

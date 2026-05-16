@@ -5,6 +5,8 @@ import api.generators.RandomModelGenerator;
 import api.models.CreateUserRequest;
 import api.models.CreateUserResponse;
 import api.models.comparison.ModelAssertions;
+import common.annotations.APIBackend;
+import common.annotations.APIVersion;
 import common.annotations.AdminSession;
 import common.annotations.Browsers;
 import org.junit.jupiter.api.Test;
@@ -16,12 +18,14 @@ import uiTests.BaseUiTest;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+
 public class CreateUserUITest extends BaseUiTest {
 
 
     @Test
     @AdminSession
-    @Browsers({"chrome"})
+    @Browsers({"firefox"})
+    @APIVersion(APIBackend.VALIDATION_FIX)
     public void adminCanCreateUserTest(){
         // ШАГ 1: админ логинится в банке
         // ШАГ 2: админ создает юзера в банке на своей панели +
@@ -45,6 +49,7 @@ public class CreateUserUITest extends BaseUiTest {
     @Test
     @AdminSession
     @Browsers({"chrome"})
+    @APIVersion(APIBackend.DATABASE_FIX)
     public void adminCannotCreateUserWithInvalidDataTest() {
         // ШАГ 1: админ логинится в банке
         // ШАГ 2: админ создает юзера в банке

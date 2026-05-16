@@ -1,6 +1,8 @@
 package uiTests.iteration2;
 
 import api.models.CreateUserRequest;
+import common.annotations.APIBackend;
+import common.annotations.APIVersion;
 import common.annotations.Browsers;
 import common.annotations.UserSession;
 import common.storage.SessionStorage;
@@ -11,6 +13,7 @@ import ui.pages.BankAlerts;
 import ui.pages.DepositMoney;
 import uiTests.BaseUiTest;
 
+@APIVersion(APIBackend.DATABASE_FIX)
 public class DepositMoneyUITest extends BaseUiTest {
 
     //Позитив
