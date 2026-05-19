@@ -54,6 +54,16 @@ public enum Endpoint {
             "/accounts/{accountId}/transactions",
             BaseModel.class,
             GetAccountTransactionsResponse.class
+    ),
+    TRANSFER_WITH_FRAUD_CHECK(
+            "/accounts/transfer-with-fraud-check",
+            TransferMoneyRequest.class,
+            TransferMoneyResponse.class
+    ),
+    FRAUD_CHECK_STATUS(
+            "/api/v1/accounts/fraud-check/{transactionId}",
+            BaseModel.class,
+            FraudCheckResponse.class
     );
 
     // Метод для подстановки path params

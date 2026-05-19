@@ -1,6 +1,7 @@
 package api.requests.steps;
 
 import api.models.*;
+import common.helpers.StepLogger;
 import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.Assertions;
 import api.requests.skelethon.Endpoint;
@@ -102,6 +103,22 @@ public class UserSteps {
                 Endpoint.CUSTOMER_ACCOUNTS,
                 ResponseSpecs.requestReturnsOK()).getAll(CreateAccountResponse[].class);
 
+    }
+
+    public TransferMoneyResponse transferWithFraudCheck(Long senderAccountId, Long receiverAccountId, double amount) {
+        return StepLogger.log("User " + username + " transfers " + amount + " to " + receiverAccountId + " with fraud check", () -> {
+            TransferMoneyRequest transferRequest = TransferMoneyRequest.builder()
+                    .senderAccountId(senderAccountId)
+                    .receiverAccountId(receiverAccountId)
+                    .amount(amount)
+                    .description("Test transfer with fraud check")
+                    .build();
+
+            return new ValidatedCrudRequester<TransferMoneyResponse>(
+                    RequestSpecs.authAsUserSpec(username, password),
+                    Endpoint.TRANSFER_WITH_FRAUD_CHECK,
+                    ResponseSpecs.requestReturnsOK()).post(transferRequest);
+        });
     }
 
 }
