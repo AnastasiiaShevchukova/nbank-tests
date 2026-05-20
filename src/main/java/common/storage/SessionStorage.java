@@ -1,9 +1,11 @@
 package common.storage;
 
+import api.models.CreateAccountResponse;
 import api.models.CreateUserRequest;
 import api.requests.steps.UserSteps;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -19,6 +21,10 @@ public class SessionStorage {
     private static final ThreadLocal<SessionStorage> INSTANCE = ThreadLocal.withInitial(SessionStorage::new);
 
     private final LinkedHashMap<CreateUserRequest, UserSteps> userStepsMap = new LinkedHashMap<>();
+
+    // хранение аккаунтов и сумм депозитов
+    private final HashMap<CreateUserRequest, CreateAccountResponse> userAccounts = new HashMap<>();
+    private final HashMap<CreateUserRequest, Double> userDeposits = new HashMap<>();
 
     private SessionStorage(){};
 
@@ -53,5 +59,29 @@ public class SessionStorage {
 
     public static void clear() {
         INSTANCE.get().userStepsMap.clear();
+        INSTANCE.get().userAccounts.clear();
+        INSTANCE.get().userDeposits.clear();
+    }
+
+    // метод для сохранения аккаунта пользователя
+    public static void setUserAccount(CreateUserRequest user, CreateAccountResponse account) {
+        INSTANCE.get().userAccounts.put(user, account);
+    }
+
+    // метод для сохранения суммы депозита
+    public static void setUserDeposit(CreateUserRequest user, double depositAmount) {
+        INSTANCE.get().userDeposits.put(user, depositAmount);
+    }
+
+    // Получение аккаунта пользователя
+    public static CreateAccountResponse getUserAccount(int index) {
+        CreateUserRequest user = getUser(index);
+        return INSTANCE.get().userAccounts.get(user);
+    }
+
+    // Получение суммы депозита пользователя
+    public static double getUserDeposit(int index) {
+        CreateUserRequest user = getUser(index);
+        return INSTANCE.get().userDeposits.get(user);
     }
 }

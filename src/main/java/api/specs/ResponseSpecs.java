@@ -44,6 +44,13 @@ public class ResponseSpecs {
                 .build();
     }
 
+    public static ResponseSpecification requestReturnsBadRequestWithErrorMessage(String errorMsg){
+        return defaultResponseBuilder()
+                .expectStatusCode(HttpStatus.SC_BAD_REQUEST)
+                .expectBody("message", Matchers.equalTo(errorMsg))
+                .build();
+    }
+
     public static ResponseSpecification requestReturnsForbidden(String errorMsg){
         return defaultResponseBuilder()
                 .expectStatusCode(HttpStatus.SC_FORBIDDEN)
