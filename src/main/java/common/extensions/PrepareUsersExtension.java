@@ -2,7 +2,6 @@ package common.extensions;
 
 import api.models.CreateAccountResponse;
 import api.models.CreateUserRequest;
-import api.models.DepositMoneyResponse;
 import api.requests.steps.AccountSteps;
 import api.requests.steps.AdminSteps;
 import common.annotations.PrepareUsers;
@@ -35,11 +34,6 @@ public class PrepareUsersExtension implements BeforeEachCallback {
                 CreateAccountResponse account = accountSteps.createAccount();
 
                 SessionStorage.setUserAccount(user, account);
-
-                double depositAmount = Math.random() * 4999.9 + 0.1;
-                DepositMoneyResponse depositResponse = accountSteps.depositToAccount(account.getId(), depositAmount);
-
-                SessionStorage.setUserDeposit(user, depositAmount);
             }
 
             SessionStorage.addUsers(users);

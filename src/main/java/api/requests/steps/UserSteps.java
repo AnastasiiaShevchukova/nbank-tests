@@ -121,4 +121,20 @@ public class UserSteps {
         });
     }
 
+    public TransferMoneyResponse transferWithFraudCheckReturns400(Long senderAccountId, Long receiverAccountId, double amount, String errorMsg) {
+        return StepLogger.log("User " + username + " transfers " + amount + " to " + receiverAccountId + " with fraud check", () -> {
+            TransferMoneyRequest transferRequest = TransferMoneyRequest.builder()
+                    .senderAccountId(senderAccountId)
+                    .receiverAccountId(receiverAccountId)
+                    .amount(amount)
+                    .description("Test transfer with fraud check")
+                    .build();
+
+            return new ValidatedCrudRequester<TransferMoneyResponse>(
+                    RequestSpecs.authAsUserSpec(username, password),
+                    Endpoint.TRANSFER_WITH_FRAUD_CHECK,
+                    ResponseSpecs.requestReturnsBadRequestWithErrorMessage(errorMsg)).post(transferRequest);
+        });
+    }
+
 }

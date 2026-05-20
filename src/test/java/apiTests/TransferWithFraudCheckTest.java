@@ -2,6 +2,7 @@ package apiTests;
 
 import api.models.*;
 import api.models.comparison.ModelAssertions;
+import api.requests.steps.AccountSteps;
 import api.requests.steps.UserSteps;
 import common.annotations.PrepareUsers;
 import common.extensions.FraudCheckWireMockExtension;
@@ -34,15 +35,18 @@ public class TransferWithFraudCheckTest extends BaseTest{
     )
     @PrepareUsers(2)
     public void testTransferWithFraudCheck() {
-        // Подготовительные шаги:
         UserSteps userSteps1 = SessionStorage.getSteps(1);
-        UserSteps userSteps2 = SessionStorage.getSteps(2);
         CreateAccountResponse account1 = SessionStorage.getUserAccount(1);
         CreateAccountResponse account2 = SessionStorage.getUserAccount(2);
-        double depositAmount1 = SessionStorage.getUserDeposit(1);
+
+        AccountSteps accountSteps1 = new AccountSteps(SessionStorage.getUser(1).getUsername(), SessionStorage.getUser(1).getPassword());
+        account1 = accountSteps1.createAccount();
+        double depositAmount = Math.random() * 4999.9 + 0.1;
+        accountSteps1.depositToAccount(account1.getId(), depositAmount);
+
 
         // Шаги теста
-        double transferAmount = Math.random() * (depositAmount1 - 0.1) + 0.1;
+        double transferAmount = Math.random() * (depositAmount - 0.1) + 0.1;
         // Попытка перевода денег с проверкой на фрод
         TransferMoneyResponse transferResponse = userSteps1.transferWithFraudCheck(
                 account1.getId(),
