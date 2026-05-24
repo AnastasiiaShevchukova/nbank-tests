@@ -1,5 +1,6 @@
 package apiTests;
 
+import api.generators.FraudCheckTestData;
 import api.models.*;
 import api.models.comparison.ModelAssertions;
 import api.requests.steps.AccountSteps;
@@ -26,12 +27,12 @@ public class TransferWithFraudCheckTest extends BaseTest{
 
     @Test
     @FraudCheckMock(
-            status = "SUCCESS",
-            decision = "APPROVED",
-            riskScore = 0.2,
-            reason = "Low risk transaction",
-            requiresManualReview = false,
-            additionalVerificationRequired = false
+            status = FraudCheckTestData.STATUS_SUCCESS,
+            decision = FraudCheckTestData.DECISION_APPROVED,
+            riskScore = FraudCheckTestData.FRAUD_RISK_SCORE_LOW,
+            reason = FraudCheckTestData.FRAUD_REASON_LOW_RISK,
+            requiresManualReview = FraudCheckTestData.REQUIRES_MANUAL_REVIEW_FALSE,
+            additionalVerificationRequired = FraudCheckTestData.REQUIRES_VERIFICATION_FALSE
     )
     @PrepareUsers(2)
     public void testTransferWithFraudCheck() {
@@ -55,17 +56,12 @@ public class TransferWithFraudCheckTest extends BaseTest{
         );
 
         softly.assertThat(transferResponse).isNotNull();
-        TransferMoneyResponse expectedResponse = TransferMoneyResponse.builder()
-                .status("APPROVED")
-                .message("Transfer approved and processed immediately")
-                .amount(transferAmount)
-                .senderAccountId(account1.getId())
-                .receiverAccountId(account2.getId())
-                .fraudRiskScore(0.2)
-                .fraudReason("Low risk transaction")
-                .requiresManualReview(false)
-                .requiresVerification(false)
-                .build();
+
+        long senderId = account1.getId().longValue();
+        long receiverId = account2.getId().longValue();
+
+        TransferMoneyResponse expectedResponse = FraudCheckTestData
+                .expectedApprovedTransfer(senderId, receiverId, transferAmount).build();
 
         ModelAssertions.assertThatModels(expectedResponse, transferResponse).match();
     }
