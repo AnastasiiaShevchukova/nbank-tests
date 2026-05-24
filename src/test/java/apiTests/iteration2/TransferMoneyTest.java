@@ -1,5 +1,6 @@
 package apiTests.iteration2;
 
+import api.generators.FraudCheckTestData;
 import api.models.*;
 import api.requests.steps.DataBaseSteps;
 import apiTests.BaseTest;
@@ -15,14 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import api.requests.skelethon.Endpoint;
-import api.requests.skelethon.requesters.CrudRequester;
-import api.requests.steps.AdminSteps;
 import api.requests.steps.UserSteps;
-import api.specs.RequestSpecs;
-import api.specs.ResponseSpecs;
-
-import java.util.List;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -44,12 +38,12 @@ public class TransferMoneyTest extends BaseTest {
     @ParameterizedTest(name = "User can transfer money 1 - 10 000 rouble")
     @MethodSource("moneyValidTransferData")
     @FraudCheckMock(
-            status = "SUCCESS",
-            decision = "APPROVED",
-            riskScore = 0.2,
-            reason = "Low risk transaction",
-            requiresManualReview = false,
-            additionalVerificationRequired = false
+            status = FraudCheckTestData.STATUS_SUCCESS,
+            decision = FraudCheckTestData.DECISION_APPROVED,
+            riskScore = FraudCheckTestData.FRAUD_RISK_SCORE_LOW,
+            reason = FraudCheckTestData.FRAUD_REASON_LOW_RISK,
+            requiresManualReview = FraudCheckTestData.REQUIRES_MANUAL_REVIEW_FALSE,
+            additionalVerificationRequired = FraudCheckTestData.REQUIRES_VERIFICATION_FALSE
     )
     @PrepareUsers()
     public void userCanDepositMoneyTest(Integer depositAmount, Integer transferAmount, Integer depositCount) {
@@ -82,17 +76,9 @@ public class TransferMoneyTest extends BaseTest {
         );
 
         softly.assertThat(transferResponse).isNotNull();
-        TransferMoneyResponse expectedResponse = TransferMoneyResponse.builder()
-                .status("APPROVED")
-                .message("Transfer approved and processed immediately")
-                .amount(transferAmount)
-                .senderAccountId(account1)
-                .receiverAccountId(account2)
-                .fraudRiskScore(0.2)
-                .fraudReason("Low risk transaction")
-                .requiresManualReview(false)
-                .requiresVerification(false)
-                .build();
+
+        TransferMoneyResponse expectedResponse = FraudCheckTestData
+                .expectedApprovedTransfer(account1, account2, transferAmount).build();
 
         ModelAssertions.assertThatModels(expectedResponse, transferResponse).match();
 
@@ -118,12 +104,12 @@ public class TransferMoneyTest extends BaseTest {
     @ParameterizedTest(name = "User can NOT transfer money")
     @MethodSource("moneyInvalidTransferData")
     @FraudCheckMock(
-            status = "SUCCESS",
-            decision = "APPROVED",
-            riskScore = 0.2,
-            reason = "Low risk transaction",
-            requiresManualReview = false,
-            additionalVerificationRequired = false
+            status = FraudCheckTestData.STATUS_SUCCESS,
+            decision = FraudCheckTestData.DECISION_APPROVED,
+            riskScore = FraudCheckTestData.FRAUD_RISK_SCORE_LOW,
+            reason = FraudCheckTestData.FRAUD_REASON_LOW_RISK,
+            requiresManualReview = FraudCheckTestData.REQUIRES_MANUAL_REVIEW_FALSE,
+            additionalVerificationRequired = FraudCheckTestData.REQUIRES_VERIFICATION_FALSE
     )
     @PrepareUsers()
     public void userCanNotTransferMoneyTest(Integer depositAmount, Integer transferAmount, Integer depositCount, String errorMsg) {
@@ -156,18 +142,9 @@ public class TransferMoneyTest extends BaseTest {
                 errorMsg
         );
         softly.assertThat(transferResponse).isNotNull();
-        TransferMoneyResponse expectedResponse = TransferMoneyResponse.builder()
-                .status(null)
-                .message(errorMsg)
-                .amount(0)
-                .senderAccountId(0)
-                .receiverAccountId(0)
-                .fraudRiskScore(0.0)
-                .fraudReason(null)
-                .requiresManualReview(false)
-                .requiresVerification(false)
-                .build();
 
+        TransferMoneyResponse expectedResponse = FraudCheckTestData
+                .expectedFailTransfer(errorMsg).build();
         ModelAssertions.assertThatModels(expectedResponse, transferResponse).match();
 
         // проверка через АПИ, что баланс не поменялся после трансфера
