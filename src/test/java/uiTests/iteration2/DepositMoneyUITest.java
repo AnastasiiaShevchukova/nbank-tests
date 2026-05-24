@@ -28,9 +28,9 @@ public class DepositMoneyUITest extends BaseUiTest {
         // Предусловие ШАГ 1: админ логинится в банке
         // Предусловие Шаг 2: админ создает юзера
         // Предусловие Шаг 3: юзер логинится в банке
-        CreateUserRequest user = SessionStorage.getUser();
         // Предусловие Шаг 4: юзер создает аккаунт
-        long createdAccountId =  UserSteps.createAccount(user).getId();
+        CreateUserRequest user = SessionStorage.getUser();
+        long createdAccountId =  SessionStorage.getUserAccount(1).getId();
         // ШАГИ ТЕСТА:
         // Открыть страницу депозита денег
         // Выбрать созданный аккаунт в селекте "Select Account:"
@@ -57,9 +57,9 @@ public class DepositMoneyUITest extends BaseUiTest {
         // Предусловие ШАГ 1: админ логинится в банке
         // Предусловие Шаг 2: админ создает юзера
         // Предусловие Шаг 3: юзер логинится в банке
-        CreateUserRequest user = SessionStorage.getUser();
         // Предусловие Шаг 4: юзер создает аккаунт
-        long createdAccountId = UserSteps.createAccount(user).getId();
+        CreateUserRequest user = SessionStorage.getUser();
+        long createdAccountId =  SessionStorage.getUserAccount(1).getId();
         // ШАГИ ТЕСТА:
         // Открыть страницу депозита денег
         // Выбрать созданный аккаунт в селекте "Select Account:"
@@ -86,9 +86,9 @@ public class DepositMoneyUITest extends BaseUiTest {
         // Предусловие ШАГ 1: админ логинится в банке
         // Предусловие Шаг 2: админ создает юзера
         // Предусловие Шаг 3: юзер логинится в банке
-        CreateUserRequest user = SessionStorage.getUser();
         // Предусловие Шаг 4: юзер создает аккаунт
-        long createdAccountId = UserSteps.createAccount(user).getId();
+        CreateUserRequest user = SessionStorage.getUser();
+        long createdAccountId =  SessionStorage.getUserAccount(1).getId();
         // ШАГИ ТЕСТА:
         // Открыть страницу депозита денег
         // Выбрать созданный аккаунт в селекте "Select Account:"

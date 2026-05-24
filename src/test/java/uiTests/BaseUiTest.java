@@ -16,8 +16,6 @@ import java.util.Map;
 
 import static com.codeborne.selenide.Selenide.executeJavaScript;
 
-@ExtendWith(AdminSessionExtension.class)
-@ExtendWith(UserSessionExtension.class)
 @ExtendWith(BrowserMatchExtension.class)
 public class BaseUiTest extends BaseTest {
 
