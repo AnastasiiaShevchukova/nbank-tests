@@ -12,19 +12,21 @@ import apiTests.BaseTest;
 import api.models.CreateUserRequest;
 import common.annotations.APIBackend;
 import common.annotations.APIVersion;
+import common.annotations.UserSession;
+import common.storage.SessionStorage;
 import org.junit.jupiter.api.Test;
-import api.requests.steps.AdminSteps;
 
 @APIVersion(APIBackend.DATABASE_FIX)
 public class CreateAccountTest extends BaseTest {
 
     //Positive
     @Test
+    @UserSession()
     public void userCanCreateAccountTest() {
-        CreateUserRequest userRequest = AdminSteps.createUser();
+        CreateUserRequest user = SessionStorage.getUser();
 
         CreateAccountResponse createAccountResponse = new ValidatedCrudRequester<CreateAccountResponse>
-                (RequestSpecs.authAsUserSpec(userRequest.getUsername(), userRequest.getPassword()),
+                (RequestSpecs.authAsUserSpec(user.getUsername(), user.getPassword()),
                         Endpoint.ACCOUNTS,
                         ResponseSpecs.entityWasCreated())
                 .post(null);

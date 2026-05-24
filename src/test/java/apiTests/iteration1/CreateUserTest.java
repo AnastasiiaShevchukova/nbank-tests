@@ -11,6 +11,7 @@ import api.models.GetAllUserResponse;
 import api.models.comparison.ModelAssertions;
 import common.annotations.APIBackend;
 import common.annotations.APIVersion;
+import common.annotations.AdminSession;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -33,16 +34,17 @@ public class CreateUserTest extends BaseTest {
 
     // Positive:
     @Test
+    @AdminSession
     public void adminCanCreateUserWithCorrectDataTest() {
         // Подготовка данных
-        CreateUserRequest createUserRequest = RandomModelGenerator.generate(CreateUserRequest.class);
+        CreateUserRequest newUser = RandomModelGenerator.generate(CreateUserRequest.class);
 
         // POST запрос
         CreateUserResponse createUserResponse = new ValidatedCrudRequester<CreateUserResponse>
                 (RequestSpecs.adminSpec(), Endpoint.ADMIN_USER, ResponseSpecs.entityWasCreated())
-                .post(createUserRequest);
+                .post(newUser);
         // Проверка изначально созданного DTO с полученным DTO
-        ModelAssertions.assertThatModels(createUserRequest, createUserResponse).match();
+        ModelAssertions.assertThatModels(newUser, createUserResponse).match();
 
         // GET запрос для проверки созданного юзера
         // запросить все созданные админом аккаунты и проверить, что созданный юзер там
@@ -50,16 +52,16 @@ public class CreateUserTest extends BaseTest {
 
         // Находим созданного пользователя в списке
         GetAllUserResponse createdUserInList = allUsers.stream()
-                .filter(user -> user.getUsername().equals(createUserRequest.getUsername()))
+                .filter(user -> user.getUsername().equals(newUser.getUsername()))
                 .findFirst()
                 .orElse(null);
 
         softly.assertThat(createdUserInList).isNotNull();
-        softly.assertThat(createdUserInList.getUsername()).isEqualTo(createUserRequest.getUsername());
-        softly.assertThat(createdUserInList.getRole()).isEqualTo(createUserRequest.getRole());
+        softly.assertThat(createdUserInList.getUsername()).isEqualTo(newUser.getUsername());
+        softly.assertThat(createdUserInList.getRole()).isEqualTo(newUser.getRole());
 
         // Проверка через базу данных
-        UserDao userDao = DataBaseSteps.getUserByUsername(createUserRequest.getUsername());
+        UserDao userDao = DataBaseSteps.getUserByUsername(newUser.getUsername());
         DaoAndModelAssertions.assertThat(createUserResponse, userDao).match();
     }
 
@@ -76,17 +78,18 @@ public class CreateUserTest extends BaseTest {
 
     @MethodSource("userInvalidData")
     @ParameterizedTest
+    @AdminSession
     public void adminCanNotCreateUserWithInvalidDataTest(String username, String password, String role, String errorKey, List<String> errorValues) {
-        CreateUserRequest createUserRequest = CreateUserRequest.builder()
+        CreateUserRequest newUser = CreateUserRequest.builder()
                 .username(username)
                 .password(password)
                 .role(role)
                 .build();
 
         new CrudRequester(RequestSpecs.adminSpec(), Endpoint.ADMIN_USER, ResponseSpecs.requestReturnsBadRequest(errorKey, errorValues))
-                .post(createUserRequest);
+                .post(newUser);
 
         // Проверка через БД
-        assertNull(DataBaseSteps.getUserByUsername(createUserRequest.getUsername()));
+        assertNull(DataBaseSteps.getUserByUsername(newUser.getUsername()));
     }
 }
