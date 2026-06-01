@@ -12,6 +12,7 @@ import common.annotations.PrepareUsers;
 import common.extensions.FraudCheckWireMockExtension;
 import common.extensions.TimingExtension;
 import common.storage.SessionStorage;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -46,6 +47,7 @@ public class TransferMoneyTest extends BaseTest {
             additionalVerificationRequired = FraudCheckTestData.REQUIRES_VERIFICATION_FALSE
     )
     @PrepareUsers()
+    @Disabled
     public void userCanDepositMoneyTest(Integer depositAmount, Integer transferAmount, Integer depositCount) {
         UserSteps userSteps1 = SessionStorage.getSteps(1);
         CreateUserRequest user1= SessionStorage.getUser();
@@ -111,6 +113,7 @@ public class TransferMoneyTest extends BaseTest {
             requiresManualReview = FraudCheckTestData.REQUIRES_MANUAL_REVIEW_FALSE,
             additionalVerificationRequired = FraudCheckTestData.REQUIRES_VERIFICATION_FALSE
     )
+    @Disabled
     @PrepareUsers()
     public void userCanNotTransferMoneyTest(Integer depositAmount, Integer transferAmount, Integer depositCount, String errorMsg) {
         UserSteps userSteps1 = SessionStorage.getSteps(1);

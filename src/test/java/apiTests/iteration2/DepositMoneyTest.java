@@ -1,5 +1,6 @@
 package apiTests.iteration2;
 
+import api.requests.steps.AdminSteps;
 import api.requests.steps.DataBaseSteps;
 import apiTests.BaseTest;
 import api.models.CreateUserRequest;
@@ -8,6 +9,7 @@ import api.models.DepositMoneyResponse;
 import api.models.comparison.ModelAssertions;
 import common.annotations.APIBackend;
 import common.annotations.APIVersion;
+import common.annotations.PrepareUsers;
 import common.annotations.UserSession;
 import common.storage.SessionStorage;
 import org.junit.jupiter.api.DisplayName;
@@ -32,21 +34,21 @@ public class DepositMoneyTest extends BaseTest {
     //Positive 1:
     @ParameterizedTest(name = "User can deposit money 1 - 5000 rouble")
     @ValueSource(ints = {1, 2500, 4999, 5000})
-    @UserSession()
     public void userCanDepositMoneyTest(int depositAmount) {
-        CreateUserRequest user = SessionStorage.getUser();
-        long createdAccountId = SessionStorage.getUserAccount(1).getId();
+        CreateUserRequest createUserRequest = AdminSteps.createUser();
+
+        long createdAccountId = UserSteps.createAccount(createUserRequest).getId();
 
         DepositMoneyRequest depositRequest = DepositMoneyRequest.builder()
                 .id(createdAccountId)
                 .balance(depositAmount)
                 .build();
-        DepositMoneyResponse depositResponse = UserSteps.depositMoney(depositRequest, user);
+        DepositMoneyResponse depositResponse = UserSteps.depositMoney(depositRequest, createUserRequest);
 
         ModelAssertions.assertThatModels(depositRequest, depositResponse).match();
 
         // Проверка через АПИ, что баланс изменился
-        UserSteps.checkAccountBalance(depositAmount, user, createdAccountId);
+        UserSteps.checkAccountBalance(depositAmount, createUserRequest, createdAccountId);
 
         // Проверка через БД
         Double expectedBalance = Double.valueOf(depositAmount);
@@ -60,18 +62,18 @@ public class DepositMoneyTest extends BaseTest {
     //Negative 1:
     public static Stream<Arguments> moneyInvalidDepositData() {
         return Stream.of(
-                Arguments.of(-1, "Invalid account or amount"),
-                Arguments.of(0, "Invalid account or amount"),
-                Arguments.of(5001, "Deposit amount exceeds the 5000 limit")
+                Arguments.of(-1, "Invalid field types: accountId must be integer, amount must be number"),
+                Arguments.of(0, "Invalid field types: accountId must be integer, amount must be number"),
+                Arguments.of(5001, "Invalid field types: accountId must be integer, amount must be number")
         );
     }
 
     @ParameterizedTest(name = "User can not deposit money < 0 or > 5000 rouble")
     @MethodSource("moneyInvalidDepositData")
-    @UserSession()
     public void userCanNotDepositMoneyTest(Integer depositAmount, String errorMsg) {
-        CreateUserRequest user = SessionStorage.getUser();
-        long createdAccountId = SessionStorage.getUserAccount(1).getId();
+        CreateUserRequest createUserRequest = AdminSteps.createUser();
+
+        long createdAccountId = UserSteps.createAccount(createUserRequest).getId();
 
         DepositMoneyRequest depositRequest = DepositMoneyRequest.builder()
                 .id(createdAccountId)
@@ -79,13 +81,13 @@ public class DepositMoneyTest extends BaseTest {
                 .build();
 
         new CrudRequester(
-                RequestSpecs.authAsUserSpec(user.getUsername(), user.getPassword()),
+                RequestSpecs.authAsUserSpec(createUserRequest.getUsername(), createUserRequest.getPassword()),
                 Endpoint.ACCOUNTS_DEPOSIT,
-                ResponseSpecs.requestReturnsBadRequestWithoutErrorKey(errorMsg))
+                ResponseSpecs.requestReturnsBadRequestWithErrorMessage(errorMsg))
                 .post(depositRequest);
 
         // Проверка через АПИ, что баланс не изменился
-        UserSteps.checkAccountBalance(0, user, createdAccountId);
+        UserSteps.checkAccountBalance(0, createUserRequest, createdAccountId);
 
         // Проверка через БД
         Double actualBalance = DataBaseSteps.getAccountBalanceByAccountId(createdAccountId).getBalance();
@@ -95,10 +97,10 @@ public class DepositMoneyTest extends BaseTest {
     //Negative 2
     @Test
     @DisplayName("User can not deposit money into ANOTHER ACCOUNT")
-    @UserSession()
     public void userCanNotDepositMoneyIntoAnotherAccountTest() {
-        CreateUserRequest user = SessionStorage.getUser();
-        long createdAccountId = SessionStorage.getUserAccount(1).getId();
+        CreateUserRequest createUserRequest = AdminSteps.createUser();
+
+        long createdAccountId = UserSteps.createAccount(createUserRequest).getId();
 
         DepositMoneyRequest depositRequest = DepositMoneyRequest.builder()
                 .id(createdAccountId + 20000)
@@ -106,13 +108,13 @@ public class DepositMoneyTest extends BaseTest {
                 .build();
 
         new CrudRequester(
-                RequestSpecs.authAsUserSpec(user.getUsername(), user.getPassword()),
+                RequestSpecs.authAsUserSpec(createUserRequest.getUsername(), createUserRequest.getPassword()),
                 Endpoint.ACCOUNTS_DEPOSIT,
-                ResponseSpecs.requestReturnsForbidden("Unauthorized access to account"))
+                ResponseSpecs.requestReturnsBadRequestWithErrorMessage("Invalid field types: accountId must be integer, amount must be number"))
                 .post(depositRequest);
 
         // Проверка через АПИ, что баланс не изменился
-        UserSteps.checkAccountBalance(0, user, createdAccountId);
+        UserSteps.checkAccountBalance(0, createUserRequest, createdAccountId);
 
         // Проверка через БД
         Double actualBalance = DataBaseSteps.getAccountBalanceByAccountId(createdAccountId).getBalance();

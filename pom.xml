@@ -109,7 +109,7 @@
                         <version>3.2.5</version>
                         <configuration>
                             <includes>
-                                <include>**/api/**/*Test.java</include>
+                                <include>**/apiTests/**/*Test.java</include>
                             </includes>
                         </configuration>
                     </plugin>
@@ -127,7 +127,7 @@
                         <version>3.2.5</version>
                         <configuration>
                             <includes>
-                                <include>**/ui/**/*Test.java</include>
+                                <include>**/uiTests/**/*Test.java</include>
                             </includes>
                         </configuration>
                     </plugin>
