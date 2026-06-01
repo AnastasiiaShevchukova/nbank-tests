@@ -1,104 +1,55 @@
 services:
-  nbank:
-    image: nobugsme/nbank:with_fraud_check_with_transfer_fix
-    container_name: nbank-app
+  backend:
+    image: nobugsme/nbank:with_validation_fix
     ports:
       - "4111:4111"
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/nbank
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
-      FRAUD_DETECTION_SERVICE_URL: http://host.docker.internal:8080
+    networks:
+      - nbank-network
+
+  frontend:
+    image: nobugsme/nbank-ui:latest
+    expose: # не открываем порт наружу, а даем доступ контейнерам в сети
+      - "80"
     depends_on:
-      postgres:
-        condition: service_healthy
-    restart: unless-stopped
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:4111/actuator/health" ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
+      - backend
+    networks:
+      - nbank-network
 
-#  backend:
-#    image: nobugsme/nbank:with_database_with_fix
-#    ports:
-#      - "4111:4111"
-#    environment:
-#      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/nbank
-#      - SPRING_DATASOURCE_USERNAME=postgres
-#      - SPRING_DATASOURCE_PASSWORD=postgres
-#      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.postgresql.Driver
-#    depends_on:
-#      - postgres
-#    networks:
-#      - nbank-network
-
-#  backend-with-database:
-#    image: nobugsme/nbank:with_validation_fix
-#    ports:
-#      - "8000:4111"
-#    environment:
-#      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/nbank
-#      - SPRING_DATASOURCE_USERNAME=postgres
-#      - SPRING_DATASOURCE_PASSWORD=postgres
-#      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.postgresql.Driver
-#    depends_on:
-#      - postgres
-#    networks:
-#      - nbank-network
-
-  postgres:
-    image: postgres:15
-    container_name: nbank-postgres
-    environment:
-      POSTGRES_DB: nbank
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+  nginx:
+    image: nginx:latest
     ports:
-      - "5432:5432"
+      - "80:80"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      - ./config/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - nbank-network
 
-#  selenoid:
-#    image: aerokube/selenoid:latest
-#    container_name: selenoid
-#    ports:
-#      - "4444:4444"
-#    environment:
-#      - DOCKER_API_VERSION=1.44
-#    volumes:
-#      - /var/run/docker.sock:/var/run/docker.sock
-#      - /Users/anastasiashevchukova/Documents/projects/selenoid/config:/etc/selenoid/
-#      - /Users/anastasiashevchukova/Documents/projects/selenoid/video:/opt/selenoid/video/
-#    command:
-#      - "-conf"
-#      - "/etc/selenoid/browsers.json"
-#      - "-container-network"
-#      - "nbank-network"
-#    networks:
-#      - nbank-network
-#
-#  selenoid-ui:
-#    image: aerokube/selenoid-ui
-#    ports:
-#      - "8080:8080"
-#    command:
-#      - "--selenoid-uri"
-#      - "http://selenoid:4444"
-#    depends_on:
-#      - selenoid
-#    networks:
-#      - nbank-network
+  selenoid:
+    image: aerokube/selenoid:latest
+    ports:
+      - "4444:4444"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./config/:/etc/selenoid/:ro
+    command: ["-container-network", "nbank-network"]
+    depends_on:
+      - frontend
+    networks:
+      - nbank-network
 
-#networks:
-#  nbank-network:
-#    name: nbank-network
+  selenoid-ui:
+    image: aerokube/selenoid-ui:latest
+    ports:
+      - "6567:8080"
+    command: ["--selenoid-uri", "http://selenoid:4444"]
+    depends_on:
+      - selenoid
+    networks:
+      - nbank-network
 
-volumes:
-  postgres_data:
+networks:
+  nbank-network:
+    name: nbank-network
