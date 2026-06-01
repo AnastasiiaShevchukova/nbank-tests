@@ -74,7 +74,7 @@ public class ChangeNameTest extends BaseTest {
         new CrudRequester(
                 RequestSpecs.authAsUserSpec(user.getUsername(), user.getPassword()),
                 Endpoint.CUSTOMER_PROFILE,
-                ResponseSpecs.requestReturnsBadRequestWithoutErrorKey(errorMsg))
+                ResponseSpecs.requestReturnsBadRequestWithErrorMessage(errorMsg))
                 .update(changeNameRequest);
 
         // проверка через АПИ, что имя не поменялось

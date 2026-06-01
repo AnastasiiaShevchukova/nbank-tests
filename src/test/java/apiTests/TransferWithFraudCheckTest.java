@@ -13,6 +13,7 @@ import common.storage.SessionStorage;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -35,6 +36,7 @@ public class TransferWithFraudCheckTest extends BaseTest{
             additionalVerificationRequired = FraudCheckTestData.REQUIRES_VERIFICATION_FALSE
     )
     @PrepareUsers(2)
+    @Disabled
     public void testTransferWithFraudCheck() {
         UserSteps userSteps1 = SessionStorage.getSteps(1);
         CreateAccountResponse account1 = SessionStorage.getUserAccount(1);

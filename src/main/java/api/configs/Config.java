@@ -20,6 +20,18 @@ public class Config {
     }
 
     public static String getProperty(String key) {
+        // Приоритет 1: переменные системы baseApiUrl
+        String systemValue = System.getProperty(key);
+        if (systemValue != null) {
+            return systemValue;
+        }
+        // Приоритет 2: переменные окружения BASEAPIURL
+        String envKey = key.toUpperCase().replace('.', '_');
+        String envValue = System.getenv(envKey);
+        if (envValue != null){
+            return envValue;
+        }
+        // Приоритет 3: config.properties
         return INSTANCE.properties.getProperty(key);
     }
 }
