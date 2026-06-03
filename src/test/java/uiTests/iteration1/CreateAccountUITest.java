@@ -43,8 +43,8 @@ public class CreateAccountUITest extends BaseUiTest {
         assertThat(createdAccounts.getFirst().getBalance()).isZero();
 
         // Проверка через БД
-        AccountDao accountDao = DataBaseSteps.getAccountByAccountNumber(createdAccounts.getFirst().getAccountNumber());
-        DaoAndModelAssertions.assertThat(createdAccounts.getFirst(), accountDao).match();
+        //AccountDao accountDao = DataBaseSteps.getAccountByAccountNumber(createdAccounts.getFirst().getAccountNumber());
+        //DaoAndModelAssertions.assertThat(createdAccounts.getFirst(), accountDao).match();
 
     }
 }

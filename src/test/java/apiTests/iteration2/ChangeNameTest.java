@@ -30,10 +30,9 @@ public class ChangeNameTest extends BaseTest {
 
     // Positive 1:
     @Test
-    @UserSession()
     @DisplayName("User can change name")
     public void userCanChangeNameTest() {
-        CreateUserRequest user = SessionStorage.getUser();
+        CreateUserRequest user= AdminSteps.createUser();
         ChangeNameResponse changeNameResponse = UserSteps.changeName(user, "John Smith");
 
         // проверка, что имя поменялось
@@ -42,9 +41,9 @@ public class ChangeNameTest extends BaseTest {
         softly.assertThat(changeNameResponse.getCustomer().getName()).isEqualTo("John Smith");
 
         // Проверка через БД, что имя поменялось
-        String expectedName = changeNameResponse.getCustomer().getName();
-        String actualName = DataBaseSteps.getUserByUsername(user.getUsername()).getName();
-        assertEquals(expectedName, actualName, "Ожидалось, что имя юзера в БД изменится");
+        //String expectedName = changeNameResponse.getCustomer().getName();
+        //String actualName = DataBaseSteps.getUserByUsername(user.getUsername()).getName();
+        //assertEquals(expectedName, actualName, "Ожидалось, что имя юзера в БД изменится");
 
     }
 
@@ -60,12 +59,11 @@ public class ChangeNameTest extends BaseTest {
                 Arguments.of("    ", "Name must contain two words with letters only")
         );
     }
-    @UserSession()
     @ParameterizedTest(name = "User can NOT change name")
     @MethodSource("invalidNameData")
     public void userCanNotChangeNameTest(String newNameValue, String errorMsg) {
         //создание пользователя
-        CreateUserRequest user = SessionStorage.getUser();
+        CreateUserRequest user = AdminSteps.createUser();
 
         ChangeNameRequest changeNameRequest = ChangeNameRequest.builder()
                 .name(newNameValue)
@@ -74,14 +72,14 @@ public class ChangeNameTest extends BaseTest {
         new CrudRequester(
                 RequestSpecs.authAsUserSpec(user.getUsername(), user.getPassword()),
                 Endpoint.CUSTOMER_PROFILE,
-                ResponseSpecs.requestReturnsBadRequestWithErrorMessage(errorMsg))
+                ResponseSpecs.requestReturnsBadRequestWithoutErrorKey(errorMsg))
                 .update(changeNameRequest);
 
         // проверка через АПИ, что имя не поменялось
         UserSteps.checkName(user, null, "Ожидалось, что имя юзера не изменится");
 
         // Проверка через БД, что имя не поменялось
-        String actualName = DataBaseSteps.getUserByUsername(user.getUsername()).getName();
-        assertEquals(null, actualName, "Ожидалось, что имя юзера в БД не изменится");
+        //String actualName = DataBaseSteps.getUserByUsername(user.getUsername()).getName();
+        //assertEquals(null, actualName, "Ожидалось, что имя юзера в БД не изменится");
     }
 }

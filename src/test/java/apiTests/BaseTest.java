@@ -8,9 +8,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 @ExtendWith(TimingExtension.class)
 @ExtendWith(APIVersionExtension.class)
-@ExtendWith(PrepareUsersExtension.class)
-@ExtendWith(AdminSessionExtension.class)
-@ExtendWith(UserSessionExtension.class)
 public class BaseTest {
     protected SoftAssertions softly;
 

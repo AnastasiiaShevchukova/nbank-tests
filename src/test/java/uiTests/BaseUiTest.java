@@ -8,6 +8,7 @@ import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.Selenide;
 import common.extensions.AdminSessionExtension;
 import common.extensions.BrowserMatchExtension;
+import common.extensions.PrepareUsersExtension;
 import common.extensions.UserSessionExtension;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,6 +18,8 @@ import java.util.Map;
 import static com.codeborne.selenide.Selenide.executeJavaScript;
 
 @ExtendWith(BrowserMatchExtension.class)
+@ExtendWith(AdminSessionExtension.class)
+@ExtendWith(UserSessionExtension.class)
 public class BaseUiTest extends BaseTest {
 
     @BeforeAll
