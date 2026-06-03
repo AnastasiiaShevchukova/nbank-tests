@@ -56,7 +56,7 @@ public class CreateUserUITest extends BaseUiTest {
 
     @Test
     @AdminSession
-    @Browsers({"chrome"})
+    @Browsers({"firefox"})
     @APIVersion(APIBackend.DATABASE_FIX)
     public void adminCannotCreateUserWithInvalidDataTest() {
         // ШАГ 1: админ логинится в банке

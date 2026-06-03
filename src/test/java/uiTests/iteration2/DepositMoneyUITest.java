@@ -30,7 +30,7 @@ public class DepositMoneyUITest extends BaseUiTest {
         // Предусловие Шаг 3: юзер логинится в банке
         // Предусловие Шаг 4: юзер создает аккаунт
         CreateUserRequest user = SessionStorage.getUser();
-        long createdAccountId =  SessionStorage.getUserAccount(1).getId();
+        long createdAccountId =  UserSteps.createAccount(user).getId();
         // ШАГИ ТЕСТА:
         // Открыть страницу депозита денег
         // Выбрать созданный аккаунт в селекте "Select Account:"
@@ -59,7 +59,7 @@ public class DepositMoneyUITest extends BaseUiTest {
         // Предусловие Шаг 3: юзер логинится в банке
         // Предусловие Шаг 4: юзер создает аккаунт
         CreateUserRequest user = SessionStorage.getUser();
-        long createdAccountId =  SessionStorage.getUserAccount(1).getId();
+        long createdAccountId =  UserSteps.createAccount(user).getId();
         // ШАГИ ТЕСТА:
         // Открыть страницу депозита денег
         // Выбрать созданный аккаунт в селекте "Select Account:"
@@ -88,7 +88,7 @@ public class DepositMoneyUITest extends BaseUiTest {
         // Предусловие Шаг 3: юзер логинится в банке
         // Предусловие Шаг 4: юзер создает аккаунт
         CreateUserRequest user = SessionStorage.getUser();
-        long createdAccountId =  SessionStorage.getUserAccount(1).getId();
+        long createdAccountId =  UserSteps.createAccount(user).getId();
         // ШАГИ ТЕСТА:
         // Открыть страницу депозита денег
         // Выбрать созданный аккаунт в селекте "Select Account:"
