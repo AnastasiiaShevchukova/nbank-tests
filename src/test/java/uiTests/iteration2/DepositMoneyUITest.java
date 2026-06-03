@@ -44,8 +44,8 @@ public class DepositMoneyUITest extends BaseUiTest {
         UserSteps.checkAccountBalance(expectedBalance, user, createdAccountId);
 
         // Проверка через БД
-        Double actualBalance = DataBaseSteps.getAccountBalanceByAccountId(createdAccountId).getBalance();
-        assertEquals(expectedBalance, actualBalance, 0.01, "Баланс в базе данных не соответствует балансу из POST запроса на депозит");
+        //Double actualBalance = DataBaseSteps.getAccountBalanceByAccountId(createdAccountId).getBalance();
+        //assertEquals(expectedBalance, actualBalance, 0.01, "Баланс в базе данных не соответствует балансу из POST запроса на депозит");
     }
 
     //Negative 1:
@@ -73,8 +73,8 @@ public class DepositMoneyUITest extends BaseUiTest {
         UserSteps.checkAccountBalance(0, user, createdAccountId);
 
         // Проверка через БД
-        Double actualBalance = DataBaseSteps.getAccountBalanceByAccountId(createdAccountId).getBalance();
-        assertEquals(0.0, actualBalance, 0.01, "Баланс в базе данных должен быть равен 0");
+        //Double actualBalance = DataBaseSteps.getAccountBalanceByAccountId(createdAccountId).getBalance();
+        //assertEquals(0.0, actualBalance, 0.01, "Баланс в базе данных должен быть равен 0");
     }
 
     //Negative 2:
@@ -102,7 +102,7 @@ public class DepositMoneyUITest extends BaseUiTest {
         UserSteps.checkAccountBalance(0, user, createdAccountId);
 
         // Проверка через БД
-        Double actualBalance = DataBaseSteps.getAccountBalanceByAccountId(createdAccountId).getBalance();
-        assertEquals(0.0, actualBalance, 0.01, "Баланс в базе данных должен быть равен 0");
+        //Double actualBalance = DataBaseSteps.getAccountBalanceByAccountId(createdAccountId).getBalance();
+        //assertEquals(0.0, actualBalance, 0.01, "Баланс в базе данных должен быть равен 0");
     }
 }

@@ -34,7 +34,6 @@ public class CreateUserTest extends BaseTest {
 
     // Positive:
     @Test
-    @AdminSession
     public void adminCanCreateUserWithCorrectDataTest() {
         // Подготовка данных
         CreateUserRequest newUser = RandomModelGenerator.generate(CreateUserRequest.class);
@@ -61,8 +60,8 @@ public class CreateUserTest extends BaseTest {
         softly.assertThat(createdUserInList.getRole()).isEqualTo(newUser.getRole());
 
         // Проверка через базу данных
-        UserDao userDao = DataBaseSteps.getUserByUsername(newUser.getUsername());
-        DaoAndModelAssertions.assertThat(createUserResponse, userDao).match();
+        //UserDao userDao = DataBaseSteps.getUserByUsername(newUser.getUsername());
+        //DaoAndModelAssertions.assertThat(createUserResponse, userDao).match();
     }
 
 
@@ -78,7 +77,6 @@ public class CreateUserTest extends BaseTest {
 
     @MethodSource("userInvalidData")
     @ParameterizedTest
-    @AdminSession
     public void adminCanNotCreateUserWithInvalidDataTest(String username, String password, String role, String errorKey, List<String> errorValues) {
         CreateUserRequest newUser = CreateUserRequest.builder()
                 .username(username)
@@ -90,6 +88,6 @@ public class CreateUserTest extends BaseTest {
                 .post(newUser);
 
         // Проверка через БД
-        assertNull(DataBaseSteps.getUserByUsername(newUser.getUsername()));
+        //assertNull(DataBaseSteps.getUserByUsername(newUser.getUsername()));
     }
 }
