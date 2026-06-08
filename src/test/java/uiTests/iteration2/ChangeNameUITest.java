@@ -1,7 +1,6 @@
 package uiTests.iteration2;
 
 import api.generators.RandomData;
-import api.requests.steps.DataBaseSteps;
 import com.codeborne.selenide.Selenide;
 import api.models.CreateUserRequest;
 import common.annotations.APIBackend;
