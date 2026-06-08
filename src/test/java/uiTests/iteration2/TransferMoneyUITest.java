@@ -19,7 +19,7 @@ import uiTests.BaseUiTest;
 
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+
 
 @APIVersion(APIBackend.DATABASE_FIX)
 public class TransferMoneyUITest extends BaseUiTest {
