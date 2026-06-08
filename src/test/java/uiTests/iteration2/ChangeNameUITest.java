@@ -24,7 +24,6 @@ import java.util.stream.Stream;
 
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @APIVersion(APIBackend.DATABASE_FIX)
 public class ChangeNameUITest extends BaseUiTest {
