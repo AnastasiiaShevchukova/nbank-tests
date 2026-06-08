@@ -1,7 +1,6 @@
 package uiTests.iteration2;
 
 import api.models.CreateUserRequest;
-import api.requests.steps.DataBaseSteps;
 import common.annotations.APIBackend;
 import common.annotations.APIVersion;
 import common.annotations.Browsers;
@@ -14,7 +13,6 @@ import ui.pages.BankAlerts;
 import ui.pages.DepositMoney;
 import uiTests.BaseUiTest;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @APIVersion(APIBackend.DATABASE_FIX)
 public class DepositMoneyUITest extends BaseUiTest {
