@@ -1,12 +1,18 @@
 name: Run tests
 
 # триггер
-on: [ push, workflow_dispatch ]
+on:
+  push:
+    paths:
+      - 'src/**'
+  workflow_dispatch:
 
 jobs:
-  run-tests:
-    name: Set up services (review apps) and run tests
+  build-test-push:
     runs-on: ubuntu-latest
+
+    env:
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -25,11 +31,26 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
+      - name: Install jq
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
+
+      - name: Build project
+        run: ./mvnw clean package
+
+      - name: Run Checkstyle
+        run: ./mvnw checkstyle:check
+
       - name: Set up services
         run: cd infra/docker_compose && bash restart_docker.sh && cd ../..
 
       - name: Run tests
-        run: ./mvnw clean test -q
-        env:
-          APIBASEURL: http://localhost:4111
-          UIBASEURL: http://frontend
+        run: |
+          chmod +x run-tests.sh
+          ./run-tests.sh
+
+      - name: Push image
+        run: |
+            chmod +x push-tests.sh
+            ./push-tests.sh ${GITHUB_SHA}
