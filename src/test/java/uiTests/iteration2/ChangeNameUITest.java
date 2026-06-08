@@ -1,7 +1,6 @@
 package uiTests.iteration2;
 
 import api.generators.RandomData;
-import api.requests.steps.DataBaseSteps;
 import com.codeborne.selenide.Selenide;
 import api.models.CreateUserRequest;
 import common.annotations.APIBackend;
@@ -24,7 +23,6 @@ import java.util.stream.Stream;
 
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @APIVersion(APIBackend.DATABASE_FIX)
 public class ChangeNameUITest extends BaseUiTest {

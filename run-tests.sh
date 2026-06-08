@@ -17,13 +17,14 @@ mkdir -p "$TEST_OUTPUT_DIR/report"
 # 2) Запуск Docker контейнера
 echo ">>> ТЕСТЫ ЗАПУЩЕНЫ"
 docker run --rm \
+  --network nbank-network \
   -v "$TEST_OUTPUT_DIR/logs":/app/logs \
   -v "$TEST_OUTPUT_DIR/results":/app/target/surefire-reports \
   -v "$TEST_OUTPUT_DIR/report":/app/target/site \
   -e TEST_PROFILE="$TEST_PROFILE" \
-  -e APIBASEURL=http://94.41.189.137 \
-  -e UIBASEURL=http://94.41.189.137 \
-$IMAGE_NAME
+  -e APIBASEURL=http://backend:4111 \
+  -e UIBASEURL=http://frontend \
+  $IMAGE_NAME
 
 # 3) Вывод итогов
 echo ">>> ТЕСТЫ ЗАВЕРЕШЕНЫ"
