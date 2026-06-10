@@ -1,5 +1,6 @@
 package apiTests.iteration2;
 
+import api.generators.RandomData;
 import api.requests.steps.DataBaseSteps;
 import apiTests.BaseTest;
 import api.models.ChangeNameRequest;
@@ -33,12 +34,17 @@ public class ChangeNameTest extends BaseTest {
     @DisplayName("User can change name")
     public void userCanChangeNameTest() {
         CreateUserRequest user= AdminSteps.createUser();
-        ChangeNameResponse changeNameResponse = UserSteps.changeName(user, "John Smith");
+        String newUsername = RandomData.getRandomValidUsername();
+
+        ChangeNameResponse changeNameResponse = UserSteps.changeName(user, newUsername);
 
         // проверка, что имя поменялось
+        // проверка через АПИ, что имя поменялось
+        UserSteps.checkName(user, newUsername, "Ожидалось, что имя юзера изменится");
+
         softly.assertThat(changeNameResponse.getMessage()).isEqualTo("Profile updated successfully");
         softly.assertThat(changeNameResponse.getCustomer().getUsername()).isEqualTo(user.getUsername());
-        softly.assertThat(changeNameResponse.getCustomer().getName()).isEqualTo("John Smith");
+        softly.assertThat(changeNameResponse.getCustomer().getName()).isEqualTo(newUsername);
 
         // Проверка через БД, что имя поменялось
         //String expectedName = changeNameResponse.getCustomer().getName();

@@ -69,11 +69,10 @@ public class UserSteps {
     }
 
     public static ChangeNameResponse changeName(CreateUserRequest user, String newName) {
+        ChangeNameRequest changeNameRequest = ChangeNameRequest.builder()
+                .name(newName)
+                .build();
         return StepLogger.log("User " + user.getUsername() + "change name to " + newName, () -> {
-            ChangeNameRequest changeNameRequest = ChangeNameRequest.builder()
-                    .name(newName)
-                    .build();
-
             ChangeNameResponse response = new ValidatedCrudRequester<ChangeNameResponse>
                     (RequestSpecs.authAsUserSpec(user.getUsername(), user.getPassword()),
                             Endpoint.CUSTOMER_PROFILE,
