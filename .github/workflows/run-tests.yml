@@ -76,28 +76,61 @@ jobs:
             chmod +x push-tests.sh
             ./push-tests.sh ${GITHUB_SHA}
 
+      - name: Debug Swagger Coverage
+        run: |
+          pwd
+          ls -la
+          ls -la .swagger-coverage-commandline || true
+          ls -la .swagger-coverage-commandline/bin || true 
+
       - name: Run Swagger coverage
         if: always()
         run: .swagger-coverage-commandline/bin/swagger-coverage-commandline -s http://localhost:4111/v3/api-docs -i target/swagger-coverage-output
 
       - name: Load test report history
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         if: always()
         with:
           ref: gh-pages
           path: gh-pages
 
-      - name: Build test report
-        uses: simple-elf/allure-report-action@v1.7
+      - name: Install Allure
         if: always()
-        with:
-          gh_pages: gh-pages
-          allure_results: target/allure-results
-          allure_history: allure-history
+        run: |
+          wget https://github.com/allure-framework/allure2/releases/download/2.34.1/allure-2.34.1.tgz
+          tar -xzf allure-2.34.1.tgz
+          sudo mv allure-2.34.1 /opt/allure
+          sudo ln -sf /opt/allure/bin/allure /usr/local/bin/allure
 
-      - name: Build Swagger coverage report
+      - name: Prepare report directories
         if: always()
-        run: sudo cp swagger-coverage-report.html allure-history/${{ github.run_number }}
+        run: |
+          mkdir -p allure-history
+          mkdir -p allure-history/${{ github.run_number }}
+
+          if [ -d "gh-pages/latest/history" ]; then
+            mkdir -p target/allure-results/history
+            cp -r gh-pages/latest/history/* target/allure-results/history/ || true
+          fi
+
+      - name: Build Allure Report
+        if: always()
+        run: |
+          allure generate target/allure-results \
+            --clean \
+            -o allure-history/${{ github.run_number }}
+
+      - name: Create latest report
+        if: always()
+        run: |
+          rm -rf allure-history/latest
+          cp -r allure-history/${{ github.run_number }} allure-history/latest
+
+      - name: Copy Swagger Coverage Report
+        if: always()
+        run: |
+          cp swagger-coverage-report.html allure-history/${{ github.run_number }}/swagger-coverage-report.html || true
+          cp swagger-coverage-report.html allure-history/latest/swagger-coverage-report.html || true
 
       - name: Publish test report
         uses: peaceiris/actions-gh-pages@v3

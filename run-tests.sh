@@ -24,7 +24,7 @@ docker run --rm \
   -e TEST_PROFILE="$TEST_PROFILE" \
   -e APIBASEURL=http://backend:4111 \
   -e UIBASEURL=http://frontend \
-  -e APIVERSION: /api/v1 \
+  -e APIVERSION=/api/v1 \
   $IMAGE_NAME
 
 # 3) Вывод итогов
