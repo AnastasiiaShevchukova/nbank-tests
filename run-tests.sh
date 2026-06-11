@@ -27,6 +27,7 @@ docker run --rm \
   -e APIBASEURL=http://backend:4111 \
   -e UIBASEURL=http://frontend \
   -e APIVERSION=/api/v1 \
+  -e UIREMOTE=http://selenoid:4444/wd/hub \
   $IMAGE_NAME
 
 # 3) Вывод итогов

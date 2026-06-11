@@ -50,6 +50,19 @@ jobs:
           chmod +x run-tests.sh
           ./run-tests.sh
 
+      - name: Debug Swagger Coverage Files
+        if: always()
+        run: |
+          find . -name "swagger-coverage-output" -type d
+          find . -name "*.json" | grep swagger || true
+
+      - name: Debug swagger files
+        if: always()
+        run: |
+          echo "=== Searching swagger coverage files ==="
+          find . -iname "*swagger*"
+          find . -type d | grep coverage || true
+
       - name: Upload test results
         uses: actions/upload-artifact@v4
         if: always()
@@ -126,6 +139,7 @@ jobs:
       - name: Build Allure Report
         if: always()
         run: |
+          echo "Found: $ALLURE_RESULTS"
           echo "=== Searching allure-results ==="
           find . -type d -name allure-results
 

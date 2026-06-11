@@ -38,7 +38,7 @@ public class ChangeNameTest extends BaseTest {
 
         ChangeNameResponse changeNameResponse = UserSteps.changeName(user, newUsername);
 
-        // проверка, что имя поменялось
+        // Проверка, что имя поменялось
         // проверка через АПИ, что имя поменялось
         UserSteps.checkName(user, newUsername, "Ожидалось, что имя юзера изменится");
 
