@@ -54,7 +54,7 @@ public class ChangeNameTest extends BaseTest {
     }
 
 
-    //Negative 1:
+    //Negative 1 :
     public static Stream<Arguments> invalidNameData() {
         return Stream.of(
                 Arguments.of("John", "Name must contain two words with letters only"),

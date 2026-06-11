@@ -2,7 +2,7 @@
 
 # Настройка
 IMAGE_NAME=nbank-tests
-TEST_PROFILE=${1:-api} # аргумент запуска
+TEST_PROFILE=${1:-all} # аргумент запуска
 TIMESTAMP=$(date +"%Y%m%d_%H%M")
 TEST_OUTPUT_DIR=./test-output/$TIMESTAMP
 

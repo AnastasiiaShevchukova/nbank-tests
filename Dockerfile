@@ -33,7 +33,7 @@ CMD /bin/bash -c " \
     mkdir -p /app/logs ; \
     { \
     echo '>>> Running tests with profile: ${TEST_PROFILE}' ; \
-    mvn test -q -P ${TEST_PROFILE} ; \
+    mvn test -B -q -P ${TEST_PROFILE} ; \
     \
     echo '>>> Running surefire-report:report' ; \
     mvn -DskipTests=true surefire-report:report ; \

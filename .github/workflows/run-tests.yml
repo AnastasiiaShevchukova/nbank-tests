@@ -85,7 +85,14 @@ jobs:
 
       - name: Run Swagger coverage
         if: always()
-        run: .swagger-coverage-commandline/bin/swagger-coverage-commandline -s http://localhost:4111/v3/api-docs -i target/swagger-coverage-output
+        run: |
+          set +e
+          .swagger-coverage-commandline/bin/swagger-coverage-commandline \
+            -s http://localhost:4111/v3/api-docs \
+            -i target/swagger-coverage-output
+
+          echo "EXIT CODE=$?"
+          find . -name "*swagger*"
 
       - name: Load test report history
         uses: actions/checkout@v4
@@ -106,6 +113,9 @@ jobs:
         if: always()
         run: |
           mkdir -p allure-history
+
+          cp -r gh-pages/* allure-history/ || true
+
           mkdir -p allure-history/${{ github.run_number }}
 
           if [ -d "gh-pages/latest/history" ]; then
