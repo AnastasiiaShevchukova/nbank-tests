@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @APIVersion(APIBackend.DATABASE_FIX)
 public class DepositMoneyTest extends BaseTest {
 
-    //Positive 1:
+    //Positive 1 :
     @ParameterizedTest(name = "User can deposit money 1 - 5000 rouble")
     @ValueSource(ints = {1, 2500, 4999, 5000})
     public void userCanDepositMoneyTest(int depositAmount) {
