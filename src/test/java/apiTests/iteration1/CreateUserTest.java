@@ -38,7 +38,7 @@ public class CreateUserTest extends BaseTest {
         // Подготовка данных
         CreateUserRequest newUser = RandomModelGenerator.generate(CreateUserRequest.class);
 
-        // POST запрос
+        // POST запрос:
         CreateUserResponse createUserResponse = new ValidatedCrudRequester<CreateUserResponse>
                 (RequestSpecs.adminSpec(), Endpoint.ADMIN_USER, ResponseSpecs.entityWasCreated())
                 .post(newUser);
