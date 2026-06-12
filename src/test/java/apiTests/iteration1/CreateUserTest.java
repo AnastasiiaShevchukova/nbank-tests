@@ -38,7 +38,7 @@ public class CreateUserTest extends BaseTest {
         // Подготовка данных
         CreateUserRequest newUser = RandomModelGenerator.generate(CreateUserRequest.class);
 
-        // POST запрос
+        // POST запрос:
         CreateUserResponse createUserResponse = new ValidatedCrudRequester<CreateUserResponse>
                 (RequestSpecs.adminSpec(), Endpoint.ADMIN_USER, ResponseSpecs.entityWasCreated())
                 .post(newUser);
@@ -46,7 +46,7 @@ public class CreateUserTest extends BaseTest {
         ModelAssertions.assertThatModels(newUser, createUserResponse).match();
 
         // GET запрос для проверки созданного юзера
-        // запросить все созданные админом аккаунты и проверить, что созданный юзер там
+        // Запросить все созданные админом аккаунты и проверить, что созданный юзер там
         List<GetAllUserResponse> allUsers = AdminSteps.gelAllUsers();
 
         // Находим созданного пользователя в списке

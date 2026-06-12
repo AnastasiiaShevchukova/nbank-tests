@@ -2,7 +2,7 @@
 
 # Настройка
 IMAGE_NAME=nbank-tests
-TEST_PROFILE=${1:-api} # аргумент запуска
+TEST_PROFILE=${1:-all} # аргумент запуска
 TIMESTAMP=$(date +"%Y%m%d_%H%M")
 TEST_OUTPUT_DIR=./test-output/$TIMESTAMP
 
@@ -13,6 +13,8 @@ docker build -t $IMAGE_NAME .
 mkdir -p "$TEST_OUTPUT_DIR/logs"
 mkdir -p "$TEST_OUTPUT_DIR/results"
 mkdir -p "$TEST_OUTPUT_DIR/report"
+mkdir -p "$TEST_OUTPUT_DIR/allure-results"
+mkdir -p "$TEST_OUTPUT_DIR/swagger-coverage-output"
 
 # 2) Запуск Docker контейнера
 echo ">>> ТЕСТЫ ЗАПУЩЕНЫ"
@@ -21,9 +23,13 @@ docker run --rm \
   -v "$TEST_OUTPUT_DIR/logs":/app/logs \
   -v "$TEST_OUTPUT_DIR/results":/app/target/surefire-reports \
   -v "$TEST_OUTPUT_DIR/report":/app/target/site \
+  -v "$TEST_OUTPUT_DIR/allure-results":/app/target/allure-results \
+  -v "$TEST_OUTPUT_DIR/swagger-coverage-output":/app/target/swagger-coverage-output \
   -e TEST_PROFILE="$TEST_PROFILE" \
   -e APIBASEURL=http://backend:4111 \
   -e UIBASEURL=http://frontend \
+  -e APIVERSION=/api/v1 \
+  -e UIREMOTE=http://selenoid:4444/wd/hub \
   $IMAGE_NAME
 
 # 3) Вывод итогов

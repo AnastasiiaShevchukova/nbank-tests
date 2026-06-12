@@ -25,32 +25,38 @@ public class UserSteps {
     }
 
     public static CreateAccountResponse createAccount(CreateUserRequest user) {
-        CreateAccountResponse response = new ValidatedCrudRequester<CreateAccountResponse>
-                (RequestSpecs.authAsUserSpec(user.getUsername(), user.getPassword()),
-                        Endpoint.ACCOUNTS,
-                        ResponseSpecs.entityWasCreated())
-                .post(null);
-        return response;
+        return StepLogger.log("User " + user.getUsername() + " create account", () -> {
+            CreateAccountResponse response = new ValidatedCrudRequester<CreateAccountResponse>
+                    (RequestSpecs.authAsUserSpec(user.getUsername(), user.getPassword()),
+                            Endpoint.ACCOUNTS,
+                            ResponseSpecs.entityWasCreated())
+                    .post(null);
+            return response;
+        });
     }
 
     public static List<GetAllCustomerAccountsResponse> getAllCustomerAccounts(String username, String password) {
-        ValidatableResponse response = new CrudRequester(
-                RequestSpecs.authAsUserSpec(username, password),
-                Endpoint.CUSTOMER_ACCOUNTS,
-                ResponseSpecs.requestReturnsOK())
-                .get();
+        return StepLogger.log("Get all user " + username + " accounts", () -> {
+            ValidatableResponse response = new CrudRequester(
+                    RequestSpecs.authAsUserSpec(username, password),
+                    Endpoint.CUSTOMER_ACCOUNTS,
+                    ResponseSpecs.requestReturnsOK())
+                    .get();
 
-        GetAllCustomerAccountsResponse[] accountsArray = response.extract().as(GetAllCustomerAccountsResponse[].class);
-        return Arrays.asList(accountsArray);
+            GetAllCustomerAccountsResponse[] accountsArray = response.extract().as(GetAllCustomerAccountsResponse[].class);
+            return Arrays.asList(accountsArray);
+        });
     }
 
     public static DepositMoneyResponse depositMoney(DepositMoneyRequest request, CreateUserRequest user) {
-        DepositMoneyResponse response = new ValidatedCrudRequester<DepositMoneyResponse>
-                (RequestSpecs.authAsUserSpec(user.getUsername(), user.getPassword()),
-                        Endpoint.ACCOUNTS_DEPOSIT,
-                        ResponseSpecs.requestReturnsOK())
-                .post(request);
-        return response;
+        return StepLogger.log("User " + user.getUsername() + " deposit money", () -> {
+            DepositMoneyResponse response = new ValidatedCrudRequester<DepositMoneyResponse>
+                    (RequestSpecs.authAsUserSpec(user.getUsername(), user.getPassword()),
+                            Endpoint.ACCOUNTS_DEPOSIT,
+                            ResponseSpecs.requestReturnsOK())
+                    .post(request);
+            return response;
+        });
     }
 
     public static TransferMoneyResponse transferMoney(TransferMoneyRequest request, CreateUserRequest user) {
@@ -66,43 +72,50 @@ public class UserSteps {
         ChangeNameRequest changeNameRequest = ChangeNameRequest.builder()
                 .name(newName)
                 .build();
-
-        ChangeNameResponse response = new ValidatedCrudRequester<ChangeNameResponse>
-                (RequestSpecs.authAsUserSpec(user.getUsername(), user.getPassword()),
-                        Endpoint.CUSTOMER_PROFILE,
-                        ResponseSpecs.requestReturnsOK())
-                .update(changeNameRequest);
-        return response;
+        return StepLogger.log("User " + user.getUsername() + "change name to " + newName, () -> {
+            ChangeNameResponse response = new ValidatedCrudRequester<ChangeNameResponse>
+                    (RequestSpecs.authAsUserSpec(user.getUsername(), user.getPassword()),
+                            Endpoint.CUSTOMER_PROFILE,
+                            ResponseSpecs.requestReturnsOK())
+                    .update(changeNameRequest);
+            return response;
+        });
     }
 
-    public static void checkAccountBalance(double expectedBalance, CreateUserRequest createUserRequest, long accountId){
-        List<GetAllCustomerAccountsResponse> allAccounts = getAllCustomerAccounts(createUserRequest.getUsername(), createUserRequest.getPassword());
-        GetAllCustomerAccountsResponse createdAccountInList = allAccounts.stream()
-                .filter(account -> account.getId() == accountId)
-                .findFirst()
-                .orElse(null);
+    public static void checkAccountBalance(double expectedBalance, CreateUserRequest createUserRequest, long accountId) {
+        StepLogger.log("Check account " + accountId + " balance", () -> {
+            List<GetAllCustomerAccountsResponse> allAccounts = getAllCustomerAccounts(createUserRequest.getUsername(), createUserRequest.getPassword());
+            GetAllCustomerAccountsResponse createdAccountInList = allAccounts.stream()
+                    .filter(account -> account.getId() == accountId)
+                    .findFirst()
+                    .orElse(null);
 
-        Assertions.assertNotNull(createdAccountInList, "Аккаунт не найден в списке");
-        Assertions.assertEquals(expectedBalance, createdAccountInList.getBalance(),
-                "Баланс аккаунта " + accountId + " не соответствует ожидаемому");
+            Assertions.assertNotNull(createdAccountInList, "Аккаунт не найден в списке");
+            Assertions.assertEquals(expectedBalance, createdAccountInList.getBalance(),
+                    "Баланс аккаунта " + accountId + " не соответствует ожидаемому");
+        });
+
     }
 
-    public static void checkName(CreateUserRequest user, String expectedName, String message){
-        CustomerResponse response = new ValidatedCrudRequester<CustomerResponse>
-                (RequestSpecs.authAsUserSpec(user.getUsername(), user.getPassword()),
-                        Endpoint.CUSTOMER_PROFILE_GET,
-                        ResponseSpecs.requestReturnsOK())
-                .get();
+    public static void checkName(CreateUserRequest user, String expectedName, String message) {
+        StepLogger.log("Check username " + expectedName, () -> {
+            CustomerResponse response = new ValidatedCrudRequester<CustomerResponse>
+                    (RequestSpecs.authAsUserSpec(user.getUsername(), user.getPassword()),
+                            Endpoint.CUSTOMER_PROFILE_GET,
+                            ResponseSpecs.requestReturnsOK())
+                    .get();
 
-        Assertions.assertEquals(expectedName, response.getName(), message);
+            Assertions.assertEquals(expectedName, response.getName(), message);
+        });
     }
 
-    public List<CreateAccountResponse> getAllAccounts(){
-        return new ValidatedCrudRequester<CreateAccountResponse>(
-                RequestSpecs.authAsUserSpec(username, password),
-                Endpoint.CUSTOMER_ACCOUNTS,
-                ResponseSpecs.requestReturnsOK()).getAll(CreateAccountResponse[].class);
-
+    public List<CreateAccountResponse> getAllAccounts() {
+        return StepLogger.log("Get all accounts", () -> {
+            return new ValidatedCrudRequester<CreateAccountResponse>(
+                    RequestSpecs.authAsUserSpec(username, password),
+                    Endpoint.CUSTOMER_ACCOUNTS,
+                    ResponseSpecs.requestReturnsOK()).getAll(CreateAccountResponse[].class);
+        });
     }
 
     public TransferMoneyResponse transferWithFraudCheck(Long senderAccountId, Long receiverAccountId, double amount) {

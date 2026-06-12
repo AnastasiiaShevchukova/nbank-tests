@@ -1,7 +1,5 @@
 package apiTests.iteration1;
 
-import api.dao.AccountDao;
-import api.dao.comparison.DaoAndModelAssertions;
 import api.models.CreateAccountResponse;
 import api.requests.skelethon.Endpoint;
 import api.requests.skelethon.requesters.ValidatedCrudRequester;

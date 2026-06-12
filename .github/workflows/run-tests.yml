@@ -13,6 +13,8 @@ jobs:
 
     env:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      SWAGGER_URL: ${{ vars.SWAGGER_URL }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -75,3 +77,103 @@ jobs:
         run: |
             chmod +x push-tests.sh
             ./push-tests.sh ${GITHUB_SHA}
+
+      - name: Run Swagger coverage
+        if: always()
+        run: |
+          COVERAGE_DIR=$(find test-output -type d -name swagger-coverage-output | head -1)
+
+          echo "Coverage dir: $COVERAGE_DIR"
+
+          if [ -z "$COVERAGE_DIR" ]; then
+            echo "Swagger coverage directory not found"
+            exit 1
+          fi
+
+          .swagger-coverage-commandline/bin/swagger-coverage-commandline \
+            -s "$SWAGGER_URL" \
+            -i "$COVERAGE_DIR"
+
+          echo "=== Swagger report ==="
+          find . -name "swagger-coverage-report.html"
+
+      - name: Load test report history
+        uses: actions/checkout@v4
+        if: always()
+        with:
+          ref: gh-pages
+          path: gh-pages
+
+      - name: Install Allure
+        if: always()
+        run: |
+          wget https://github.com/allure-framework/allure2/releases/download/2.34.1/allure-2.34.1.tgz
+          tar -xzf allure-2.34.1.tgz
+          sudo mv allure-2.34.1 /opt/allure
+          sudo ln -sf /opt/allure/bin/allure /usr/local/bin/allure
+
+      - name: Prepare report directories
+        if: always()
+        run: |
+          mkdir -p allure-history
+
+          cp -r gh-pages/* allure-history/ || true
+
+          mkdir -p allure-history/${{ github.run_number }}
+
+          ALLURE_RESULTS=$(find test-output -type d -name allure-results | head -1)
+
+          echo "Allure results: $ALLURE_RESULTS"
+
+          if [ -d "gh-pages/latest/history" ]; then
+            mkdir -p "$ALLURE_RESULTS/history"
+            cp -r gh-pages/latest/history/* "$ALLURE_RESULTS/history/" || true
+          fi
+
+      - name: Build Allure Report
+        if: always()
+        run: |
+
+          ALLURE_RESULTS=$(find ./test-output -type d -name allure-results | head -1)
+
+          echo "Building allure from: $ALLURE_RESULTS"
+
+          ls -la "$ALLURE_RESULTS"
+
+          allure generate "$ALLURE_RESULTS" \
+            --clean \
+            -o allure-history/${{ github.run_number }}
+
+      - name: Create latest report
+        if: always()
+        run: |
+          rm -rf allure-history/latest
+          cp -r allure-history/${{ github.run_number }} allure-history/latest
+
+      - name: Copy Swagger Coverage Report
+        if: always()
+        run: |
+
+          SWAGGER_REPORT=$(find . -name "swagger-coverage-report.html" | head -1)
+
+          echo "Swagger report: $SWAGGER_REPORT"
+
+          if [ -n "$SWAGGER_REPORT" ]; then
+            cp "$SWAGGER_REPORT" \
+            allure-history/${{ github.run_number }}/swagger-coverage-report.html
+
+            cp "$SWAGGER_REPORT" \
+            allure-history/latest/swagger-coverage-report.html
+          fi
+
+      - name: Publish test report
+        uses: peaceiris/actions-gh-pages@v3
+        if: always()
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: allure-history
+
+      - name: Clean up services
+        if: always()
+        run: cd infra/docker_compose && docker compose down
