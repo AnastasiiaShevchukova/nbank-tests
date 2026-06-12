@@ -39,7 +39,7 @@ public class ChangeNameTest extends BaseTest {
         ChangeNameResponse changeNameResponse = UserSteps.changeName(user, newUsername);
 
         // Проверка, что имя поменялось
-        // проверка через АПИ, что имя поменялось
+        // Проверка через АПИ, что имя поменялось
         UserSteps.checkName(user, newUsername, "Ожидалось, что имя юзера изменится");
 
         softly.assertThat(changeNameResponse.getMessage()).isEqualTo("Profile updated successfully");

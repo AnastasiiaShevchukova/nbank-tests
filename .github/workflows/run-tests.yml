@@ -13,6 +13,8 @@ jobs:
 
     env:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      SWAGGER_URL: ${{ vars.SWAGGER_URL }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -50,19 +52,6 @@ jobs:
           chmod +x run-tests.sh
           ./run-tests.sh
 
-      - name: Debug Swagger Coverage Files
-        if: always()
-        run: |
-          find . -name "swagger-coverage-output" -type d
-          find . -name "*.json" | grep swagger || true
-
-      - name: Debug swagger files
-        if: always()
-        run: |
-          echo "=== Searching swagger coverage files ==="
-          find . -iname "*swagger*"
-          find . -type d | grep coverage || true
-
       - name: Upload test results
         uses: actions/upload-artifact@v4
         if: always()
@@ -89,13 +78,6 @@ jobs:
             chmod +x push-tests.sh
             ./push-tests.sh ${GITHUB_SHA}
 
-      - name: Debug Swagger Coverage
-        run: |
-          pwd
-          ls -la
-          ls -la .swagger-coverage-commandline || true
-          ls -la .swagger-coverage-commandline/bin || true 
-
       - name: Run Swagger coverage
         if: always()
         run: |
@@ -109,7 +91,7 @@ jobs:
           fi
 
           .swagger-coverage-commandline/bin/swagger-coverage-commandline \
-            -s http://localhost:4111/v3/api-docs \
+            -s "$SWAGGER_URL" \
             -i "$COVERAGE_DIR"
 
           echo "=== Swagger report ==="
