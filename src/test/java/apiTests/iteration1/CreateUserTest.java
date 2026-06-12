@@ -46,7 +46,7 @@ public class CreateUserTest extends BaseTest {
         ModelAssertions.assertThatModels(newUser, createUserResponse).match();
 
         // GET запрос для проверки созданного юзера
-        // запросить все созданные админом аккаунты и проверить, что созданный юзер там
+        // Запросить все созданные админом аккаунты и проверить, что созданный юзер там
         List<GetAllUserResponse> allUsers = AdminSteps.gelAllUsers();
 
         // Находим созданного пользователя в списке
