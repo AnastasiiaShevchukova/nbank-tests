@@ -36,7 +36,6 @@ public class LoginUserTest extends BaseTest {
     @Test
     public void userCanGenerateAuthTokenTest() {
         CreateUserRequest userRequest = AdminSteps.createUser();
-
         // Проверка токена
         new CrudRequester(
                 RequestSpecs.unauthSpec(),
