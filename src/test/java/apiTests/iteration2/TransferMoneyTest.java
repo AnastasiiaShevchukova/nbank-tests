@@ -102,7 +102,7 @@ public class TransferMoneyTest extends BaseTest {
         CreateUserRequest user1= SessionStorage.getUser();
         long account1 = SessionStorage.getUserAccount(1).getId();
 
-        // Выполняем депозит денег на первый аккаунт указанное количество раз (5000 или 10 000 или 15 000 и т.д)
+        // Выполняем депозит денег на первый аккаунт указанное количество раз (5000 или 10000 или 15 000 и т.д)
         int totalDeposited = 0;
         for (int i = 0; i < depositCount; i++) {
             // депозит (максимум 5000 за раз)

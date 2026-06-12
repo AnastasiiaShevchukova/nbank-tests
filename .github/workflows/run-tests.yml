@@ -99,13 +99,21 @@ jobs:
       - name: Run Swagger coverage
         if: always()
         run: |
-          set +e
+          COVERAGE_DIR=$(find test-output -type d -name swagger-coverage-output | head -1)
+
+          echo "Coverage dir: $COVERAGE_DIR"
+
+          if [ -z "$COVERAGE_DIR" ]; then
+            echo "Swagger coverage directory not found"
+            exit 1
+          fi
+
           .swagger-coverage-commandline/bin/swagger-coverage-commandline \
             -s http://localhost:4111/v3/api-docs \
-            -i target/swagger-coverage-output
+            -i "$COVERAGE_DIR"
 
-          echo "EXIT CODE=$?"
-          find . -name "*swagger*"
+          echo "=== Swagger report ==="
+          find . -name "swagger-coverage-report.html"
 
       - name: Load test report history
         uses: actions/checkout@v4
@@ -131,24 +139,24 @@ jobs:
 
           mkdir -p allure-history/${{ github.run_number }}
 
+          ALLURE_RESULTS=$(find test-output -type d -name allure-results | head -1)
+
+          echo "Allure results: $ALLURE_RESULTS"
+
           if [ -d "gh-pages/latest/history" ]; then
-            mkdir -p target/allure-results/history
-            cp -r gh-pages/latest/history/* target/allure-results/history/ || true
+            mkdir -p "$ALLURE_RESULTS/history"
+            cp -r gh-pages/latest/history/* "$ALLURE_RESULTS/history/" || true
           fi
 
       - name: Build Allure Report
         if: always()
         run: |
-          echo "Found: $ALLURE_RESULTS"
-          echo "=== Searching allure-results ==="
-          find . -type d -name allure-results
 
-          ALLURE_RESULTS=$(find . -type d -name allure-results | head -1)
+          ALLURE_RESULTS=$(find ./test-output -type d -name allure-results | head -1)
 
-          echo "Found: $ALLURE_RESULTS"
+          echo "Building allure from: $ALLURE_RESULTS"
 
           ls -la "$ALLURE_RESULTS"
-          find "$ALLURE_RESULTS" -type f | head -20
 
           allure generate "$ALLURE_RESULTS" \
             --clean \
@@ -163,8 +171,18 @@ jobs:
       - name: Copy Swagger Coverage Report
         if: always()
         run: |
-          cp swagger-coverage-report.html allure-history/${{ github.run_number }}/swagger-coverage-report.html || true
-          cp swagger-coverage-report.html allure-history/latest/swagger-coverage-report.html || true
+
+          SWAGGER_REPORT=$(find . -name "swagger-coverage-report.html" | head -1)
+
+          echo "Swagger report: $SWAGGER_REPORT"
+
+          if [ -n "$SWAGGER_REPORT" ]; then
+            cp "$SWAGGER_REPORT" \
+            allure-history/${{ github.run_number }}/swagger-coverage-report.html
+
+            cp "$SWAGGER_REPORT" \
+            allure-history/latest/swagger-coverage-report.html
+          fi
 
       - name: Publish test report
         uses: peaceiris/actions-gh-pages@v3
