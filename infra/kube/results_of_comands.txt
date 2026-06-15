@@ -1,0 +1,143 @@
+anastasiashevchukova@MacBook-Air-Anastasia nbank-tests % minikube start --driver=docker
+😄  minikube v1.38.1 on Darwin 26.5 (arm64)
+✨  Using the docker driver based on user configuration
+❗  Starting v1.39.0, minikube will default to "containerd" container runtime. See #21973 for more info.
+📌  Using Docker Desktop driver with root privileges
+👍  Starting "minikube" primary control-plane node in "minikube" cluster
+🚜  Pulling base image v0.0.50 ...
+💾  Downloading Kubernetes v1.35.1 preload ...
+    > preloaded-images-k8s-v18-v1...:  243.95 MiB / 243.95 MiB  100.00% 1.05 Mi
+    > gcr.io/k8s-minikube/kicbase...:  483.40 MiB / 483.40 MiB  100.00% 1.52 Mi
+🔥  Creating docker container (CPUs=2, Memory=6100MB) ...
+🐳  Preparing Kubernetes v1.35.1 on Docker 29.2.1 ...
+🔗  Configuring bridge CNI (Container Networking Interface) ...
+🔎  Verifying Kubernetes components...
+    ▪ Using image gcr.io/k8s-minikube/storage-provisioner:v5
+🌟  Enabled addons: storage-provisioner, default-storageclass
+🏄  Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
+
+
+anastasiashevchukova@MacBook-Air-Anastasia nbank-tests % cd infra
+anastasiashevchukova@MacBook-Air-Anastasia infra % cd kube
+anastasiashevchukova@MacBook-Air-Anastasia kube % kubectl create configmap selenoid-config --from-file=browsers.json=./nbank-chart/files/browsers.json
+configmap/selenoid-config created
+
+
+anastasiashevchukova@MacBook-Air-Anastasia kube % helm install nbank ./nbank-chart
+NAME: nbank
+LAST DEPLOYED: Mon Jun 15 14:31:49 2026
+NAMESPACE: default
+STATUS: deployed
+REVISION: 1
+DESCRIPTION: Install complete
+TEST SUITE: None
+
+anastasiashevchukova@MacBook-Air-Anastasia kube % kubectl get svc
+NAME          TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+backend       NodePort    10.110.15.158    <none>        4111:30325/TCP   51s
+frontend      NodePort    10.109.130.54    <none>        80:30873/TCP     51s
+kubernetes    ClusterIP   10.96.0.1        <none>        443/TCP          25m
+selenoid      NodePort    10.109.245.248   <none>        4444:31355/TCP   51s
+selenoid-ui   NodePort    10.108.86.123    <none>        8080:30132/TCP   51s
+
+anastasiashevchukova@MacBook-Air-Anastasia kube % kubectl get pods
+NAME                           READY   STATUS    RESTARTS   AGE
+backend-94cf644f5-r27q8        1/1     Running   0          2m19s
+frontend-8475f7c85-k4g7z       1/1     Running   0          2m19s
+selenoid-74549bb9bf-6n4nl      1/1     Running   0          2m19s
+selenoid-ui-744c5d768b-jhsqt   1/1     Running   0          2m19s
+
+
+anastasiashevchukova@MacBook-Air-Anastasia kube % kubectl logs deployment/backend
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v3.2.5)
+
+{"timestamp":"2026-06-15T09:33:31.432385053Z","logger_name":"me.nobugs.bank.BankApplication","thread_name":"main","level":"INFO","message":"Starting BankApplication v0.0.1-SNAPSHOT using Java 17.0.16 with PID 1 (/app/app.jar started by root in /app)"}
+{"timestamp":"2026-06-15T09:33:31.441240053Z","logger_name":"me.nobugs.bank.BankApplication","thread_name":"main","level":"INFO","message":"No active profile set, falling back to 1 default profile: \"default\""}
+{"timestamp":"2026-06-15T09:33:32.530238845Z","logger_name":"org.springframework.boot.web.embedded.tomcat.TomcatWebServer","thread_name":"main","level":"INFO","message":"Tomcat initialized with port 4111 (http)"}
+{"timestamp":"2026-06-15T09:33:32.534171095Z","logger_name":"org.apache.catalina.core.StandardService","thread_name":"main","level":"INFO","message":"Starting service [Tomcat]"}
+{"timestamp":"2026-06-15T09:33:32.534281845Z","logger_name":"org.apache.catalina.core.StandardEngine","thread_name":"main","level":"INFO","message":"Starting Servlet engine: [Apache Tomcat/10.1.20]"}
+{"timestamp":"2026-06-15T09:33:32.548150803Z","logger_name":"org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/]","thread_name":"main","level":"INFO","message":"Initializing Spring embedded WebApplicationContext"}
+{"timestamp":"2026-06-15T09:33:32.548638261Z","logger_name":"org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext","thread_name":"main","level":"INFO","message":"Root WebApplicationContext: initialization completed in 1032 ms"}
+🧪 MeterRegistry class = io.micrometer.prometheus.PrometheusMeterRegistry
+{"timestamp":"2026-06-15T09:33:33.227485428Z","logger_name":"org.springframework.boot.actuate.endpoint.web.EndpointLinksResolver","thread_name":"main","level":"INFO","message":"Exposing 3 endpoint(s) beneath base path '/actuator'"}
+{"timestamp":"2026-06-15T09:33:33.243461803Z","logger_name":"org.springframework.security.web.DefaultSecurityFilterChain","thread_name":"main","level":"INFO","message":"Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@4efb13f1, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@7bb4ed71, org.springframework.security.web.context.SecurityContextHolderFilter@4b5ad306, org.springframework.security.web.header.HeaderWriterFilter@2aa6bbad, org.springframework.web.filter.CorsFilter@5112b7, org.springframework.security.web.authentication.logout.LogoutFilter@15c16f19, org.springframework.security.web.authentication.www.BasicAuthenticationFilter@11148dc2, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@48a46b0f, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@1426370c, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@56835f2f, org.springframework.security.web.access.ExceptionTranslationFilter@3356ff58, org.springframework.security.web.access.intercept.AuthorizationFilter@48c5698]"}
+{"timestamp":"2026-06-15T09:33:33.51817347Z","logger_name":"org.springframework.boot.web.embedded.tomcat.TomcatWebServer","thread_name":"main","level":"INFO","message":"Tomcat started on port 4111 (http) with context path ''"}
+{"timestamp":"2026-06-15T09:33:33.526687887Z","logger_name":"me.nobugs.bank.BankApplication","thread_name":"main","level":"INFO","message":"Started BankApplication in 2.793 seconds (process running for 3.004)"}
+{"timestamp":"2026-06-15T09:39:35.477106471Z","logger_name":"org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/]","thread_name":"http-nio-4111-exec-1","level":"INFO","message":"Initializing Spring DispatcherServlet 'dispatcherServlet'"}
+{"timestamp":"2026-06-15T09:39:35.477363929Z","logger_name":"org.springframework.web.servlet.DispatcherServlet","thread_name":"http-nio-4111-exec-1","level":"INFO","message":"Initializing Servlet 'dispatcherServlet'"}
+{"timestamp":"2026-06-15T09:39:35.477955846Z","logger_name":"org.springframework.web.servlet.DispatcherServlet","thread_name":"http-nio-4111-exec-1","level":"INFO","message":"Completed initialization in 0 ms"}
+
+anastasiashevchukova@MacBook-Air-Anastasia nbank-tests % kubectl port-forward svc/frontend 3000:80
+Forwarding from 127.0.0.1:3000 -> 80
+Forwarding from [::1]:3000 -> 80
+Handling connection for 3000
+Handling connection for 3000
+Handling connection for 3000
+Handling connection for 3000
+
+anastasiashevchukova@MacBook-Air-Anastasia nbank-tests % kubectl port-forward svc/backend 4111:4111
+Forwarding from 127.0.0.1:4111 -> 4111
+Forwarding from [::1]:4111 -> 4111
+
+anastasiashevchukova@MacBook-Air-Anastasia nbank-tests % kubectl port-forward svc/selenoid 4444:4444
+Forwarding from 127.0.0.1:4444 -> 4444
+Forwarding from [::1]:4444 -> 4444
+
+
+anastasiashevchukova@MacBook-Air-Anastasia nbank-tests % kubectl port-forward svc/selenoid-ui 8080:8080
+Forwarding from 127.0.0.1:8080 -> 8080
+Forwarding from [::1]:8080 -> 8080
+
+anastasiashevchukova@MacBook-Air-Anastasia kube % kubectl logs deployment/frontend
+/docker-entrypoint.sh: /docker-entrypoint.d/ is not empty, will attempt to perform configuration
+/docker-entrypoint.sh: Looking for shell scripts in /docker-entrypoint.d/
+/docker-entrypoint.sh: Launching /docker-entrypoint.d/10-listen-on-ipv6-by-default.sh
+10-listen-on-ipv6-by-default.sh: info: Getting the checksum of /etc/nginx/conf.d/default.conf
+10-listen-on-ipv6-by-default.sh: info: Enabled listen on IPv6 in /etc/nginx/conf.d/default.conf
+/docker-entrypoint.sh: Sourcing /docker-entrypoint.d/15-local-resolvers.envsh
+/docker-entrypoint.sh: Launching /docker-entrypoint.d/20-envsubst-on-templates.sh
+/docker-entrypoint.sh: Launching /docker-entrypoint.d/30-tune-worker-processes.sh
+/docker-entrypoint.sh: Configuration complete; ready for start up
+127.0.0.1 - - [15/Jun/2026:09:39:35 +0000] "GET / HTTP/1.1" 200 648 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36"
+127.0.0.1 - - [15/Jun/2026:09:39:35 +0000] "GET /manifest.json HTTP/1.1" 200 492 "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36"
+2026/06/15 09:39:35 [error] 29#29: *1 open() "/usr/share/nginx/html/logo192.png" failed (2: No such file or directory), client: 127.0.0.1, server: , request: "GET /logo192.png HTTP/1.1", host: "localhost:3000", referrer: "http://localhost:3000/"
+127.0.0.1 - admin [15/Jun/2026:09:39:35 +0000] "GET /api/v1/customer/profile HTTP/1.1" 403 123 "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36"
+
+anastasiashevchukova@MacBook-Air-Anastasia kube % kubectl logs deployment/selenoid
+2026/06/15 09:32:10 [-] [INIT] [Loading configuration files...]
+2026/06/15 09:32:10 [-] [INIT] [Loaded configuration from /etc/selenoid/browsers.json]
+2026/06/15 09:32:10 [-] [INIT] [Video Dir: /opt/selenoid/video]
+2026/06/15 09:32:10 [-] [INIT] [Did not manage to determine your Docker API version - using default version: 1.45]
+2026/06/15 09:32:10 [-] [INIT] [Timezone: UTC]
+2026/06/15 09:32:10 [-] [INIT] [Listening on :4444]
+
+
+anastasiashevchukova@MacBook-Air-Anastasia kube % kubectl logs deployment/selenoid-ui
+2026/06/15 09:32:04 [INIT] [Listening on :8080]
+
+
+
+anastasiashevchukova@MacBook-Air-Anastasia kube % kubectl scale deployment backend --replicas=3
+deployment.apps/backend scaled
+
+anastasiashevchukova@MacBook-Air-Anastasia kube % kubectl get pods
+NAME                           READY   STATUS    RESTARTS   AGE
+backend-94cf644f5-5xqmv        1/1     Running   0          10s
+backend-94cf644f5-bkdpt        1/1     Running   0          10s
+backend-94cf644f5-r27q8        1/1     Running   0          22m
+frontend-8475f7c85-k4g7z       1/1     Running   0          22m
+selenoid-74549bb9bf-6n4nl      1/1     Running   0          22m
+selenoid-ui-744c5d768b-jhsqt   1/1     Running   0          22m
+
+
+anastasiashevchukova@MacBook-Air-Anastasia kube % kubectl get endpoints backend
+Warning: v1 Endpoints is deprecated in v1.33+; use discovery.k8s.io/v1 EndpointSlice
+NAME      ENDPOINTS                                         AGE
+backend   10.244.0.5:4111,10.244.0.7:4111,10.244.0.8:4111   22m

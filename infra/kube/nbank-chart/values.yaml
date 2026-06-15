@@ -1,0 +1,2 @@
+imagePullPolicy: IfNotPresent # Скачивание или нет образа, если он уже есть в кэше
+replicaCount: 1
