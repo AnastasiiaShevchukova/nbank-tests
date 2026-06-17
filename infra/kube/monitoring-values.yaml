@@ -1,0 +1,26 @@
+grafana:
+  enabled: true # Графана как часть helm чарта
+  service:
+    type: NodePort
+  adminUser: admin
+  adminPassword: admin
+  sidecar: # загружает дашборды из конфиг мапы
+    dashboards:
+      enabled: true
+    datasources: # для получения данных из прометеуса
+      enabled: true
+
+prometheus:
+  service:
+    type: NodePort
+  prometheusSpec:
+    serviceMonitorSelector:
+      matchLabels:
+        release: monitoring # с каких сервисов и приложений собирать метрики
+    maximumStartupDurationSeconds: 700
+
+prometheus-node-explorer:
+  enabled: true # собирать данные cpu (память, диски и тд)
+
+kube-state-metrics:
+  enabled: true # собирать состояние всех ресурсов кластера
